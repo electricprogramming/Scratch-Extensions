@@ -16,11 +16,19 @@
           {
             opcode: "getSVGForText",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get SVG for text [TXT]",
+            text: "get SVG for text [TXT] with width [WIDTH] and height [HEIGHT]",
             arguments: {
               TXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Hello, World!"
+              },
+              WIDTH: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 340
+              },
+              HEIGHT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 127
               }
             }
           }
@@ -28,10 +36,10 @@
       };
     }
 
-    getSVGForText({ TXT }) {
-      const width = 340;
-      const height = 127;
-      const initialFontSize = 100; // Larger starting font size
+    getSVGForText({ TXT, WIDTH, HEIGHT }) {
+      const width = parseFloat(WIDTH);
+      const height = parseFloat(HEIGHT);
+      const initialFontSize = 1000; // Larger starting font size
 
       // Create an SVG element
       const svgNamespace = "http://www.w3.org/2000/svg";
