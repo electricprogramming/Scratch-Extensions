@@ -7,7 +7,7 @@
 (function (Scratch) {
   "use strict";
 
-  class SVGTextGenerator {
+  class SVGFunctions {
     getInfo() {
       return {
         id: "svgfunctions",
