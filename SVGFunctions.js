@@ -39,11 +39,11 @@
             arguments: {
               SVG1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<svg width="100" height="100"><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" /></svg>'
+                defaultValue: '<svg width="100" height="100"></svg>'
               },
               SVG2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><text x="50" y="50" text-anchor="middle" dominant-baseline="middle" font-size="47">SVG</text></svg>'
+                defaultValue: '<svg width="100" height="100"></svg>'
               }
             }
           }
