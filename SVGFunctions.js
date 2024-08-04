@@ -1,5 +1,5 @@
 // Name: SVG Functions
-// ID: svgfunctions
+// ID: SVGFunctions
 // Description: Generate SVG for the given text, fitting it within a 340x127 box.
 // By: electricprogramming - https://github.com/electricprogramming/
 // License: MPL-2.0
@@ -10,7 +10,7 @@
   class SVGFunctions {
     getInfo() {
       return {
-        id: "svgfunctions",
+        id: "SVGFunctions",
         name: "SVG Functions",
         blocks: [
           {
