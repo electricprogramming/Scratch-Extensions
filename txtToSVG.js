@@ -39,7 +39,7 @@
     getSVGForText({ TXT, WIDTH, HEIGHT }) {
       const width = parseFloat(WIDTH);
       const height = parseFloat(HEIGHT);
-      const initialFontSize = 1000; // Larger starting font size
+      const initialFontSize = 1000000; // Larger starting font size
 
       // Create an SVG element
       const svgNamespace = "http://www.w3.org/2000/svg";
