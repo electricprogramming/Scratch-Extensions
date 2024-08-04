@@ -1,7 +1,7 @@
-// Name: SVG Text Generator
-// ID: svgtextgenerator
+// Name: SVG Functions
+// ID: svgfunctions
 // Description: Generate SVG for the given text, fitting it within a 340x127 box.
-// By: YourName <https://scratch.mit.edu/users/YourName/>
+// By: electricprogramming - https://github.com/electricprogramming/
 // License: MPL-2.0
 
 (function (Scratch) {
@@ -10,8 +10,8 @@
   class SVGTextGenerator {
     getInfo() {
       return {
-        id: "svgtextgenerator",
-        name: "SVG Text Generator",
+        id: "svgfunctions",
+        name: "SVG Functions",
         blocks: [
           {
             opcode: "getSVGForText",
@@ -31,6 +31,21 @@
                 defaultValue: 127
               }
             }
+          },
+          {
+            opcode: "mergeSVGs",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "merge SVG [SVG1] with [SVG2]",
+            arguments: {
+              SVG1: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<svg width="100" height="100"></svg>'
+              },
+              SVG2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<svg width="100" height="100"></svg>'
+              }
+            }
           }
         ]
       };
@@ -39,7 +54,7 @@
     getSVGForText({ TXT, WIDTH, HEIGHT }) {
       const width = parseFloat(WIDTH);
       const height = parseFloat(HEIGHT);
-      const initialFontSize = 1000; // Larger starting font size
+      const initialFontSize = 100; // Larger starting font size
 
       // Create an SVG element
       const svgNamespace = "http://www.w3.org/2000/svg";
@@ -98,7 +113,44 @@
       const serializer = new XMLSerializer();
       return serializer.serializeToString(svg);
     }
+
+    mergeSVGs({ SVG1, SVG2 }) {
+      // Parse the SVG strings into DOM elements
+      const parser = new DOMParser();
+      const svgDoc1 = parser.parseFromString(SVG1, 'image/svg+xml');
+      const svgDoc2 = parser.parseFromString(SVG2, 'image/svg+xml');
+      
+      // Get the root SVG elements
+      const svgElement1 = svgDoc1.documentElement;
+      const svgElement2 = svgDoc2.documentElement;
+      
+      // Ensure the namespaces are correct
+      svgElement1.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svgElement1.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+      
+      // Create a new SVG element for the merged result
+      const mergedSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      
+      // Copy attributes from the first SVG to the merged SVG
+      Array.from(svgElement1.attributes).forEach(attr => {
+        mergedSVG.setAttribute(attr.name, attr.value);
+      });
+      
+      // Append the contents of the first SVG to the merged SVG
+      Array.from(svgElement1.childNodes).forEach(child => {
+        mergedSVG.appendChild(child.cloneNode(true));
+      });
+      
+      // Append the contents of the second SVG to the merged SVG
+      Array.from(svgElement2.childNodes).forEach(child => {
+        mergedSVG.appendChild(child.cloneNode(true));
+      });
+      
+      // Return the merged SVG as a string
+      const serializer = new XMLSerializer();
+      return serializer.serializeToString(mergedSVG);
+    }
   }
 
-  Scratch.extensions.register(new SVGTextGenerator());
+  Scratch.extensions.register(new SVGFunctions());
 })(Scratch);
