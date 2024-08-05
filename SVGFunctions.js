@@ -16,7 +16,7 @@
           {
             opcode: "getSVGForText",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get SVG for text [TXT] with width [WIDTH] and height [HEIGHT]",
+            text: "get SVG for text [TXT] with width [WIDTH] and height [HEIGHT] shift x [SHIFTX] shift y [SHIFTY]",
             arguments: {
               TXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -28,7 +28,15 @@
               },
               HEIGHT: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 127
+                defaultValue: 120  // Changed default height to 120
+              },
+              SHIFTX: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              },
+              SHIFTY: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
               }
             }
           },
@@ -51,10 +59,12 @@
       };
     }
 
-    getSVGForText({ TXT, WIDTH, HEIGHT }) {
+    getSVGForText({ TXT, WIDTH, HEIGHT, SHIFTX, SHIFTY }) {
       const width = parseFloat(WIDTH);
       const height = parseFloat(HEIGHT);
-      const initialFontSize = 100; // Larger starting font size
+      const shiftX = parseFloat(SHIFTX);
+      const shiftY = parseFloat(SHIFTY);
+      const initialFontSize = 1000; // Updated initial font size to 1000
 
       // Create an SVG element
       const svgNamespace = "http://www.w3.org/2000/svg";
@@ -66,8 +76,8 @@
 
       // Create a text element
       const textElement = document.createElementNS(svgNamespace, 'text');
-      textElement.setAttribute('x', width / 2);
-      textElement.setAttribute('y', height / 2);
+      textElement.setAttribute('x', width / 2 + shiftX);
+      textElement.setAttribute('y', height / 2 + shiftY);
       textElement.setAttribute('text-anchor', 'middle');
       textElement.setAttribute('dominant-baseline', 'middle');
 
