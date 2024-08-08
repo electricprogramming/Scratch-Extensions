@@ -28,7 +28,7 @@
               },
               HEIGHT: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 120  // Changed default height to 120
+                defaultValue: 120
               },
               SHIFTX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -64,7 +64,7 @@
       const height = parseFloat(HEIGHT);
       const shiftX = parseFloat(SHIFTX);
       const shiftY = parseFloat(SHIFTY);
-      const initialFontSize = 1000; // Updated initial font size to 1000
+      const initialFontSize = 1000; // Initial large font size for fitting
 
       // Create an SVG element
       const svgNamespace = "http://www.w3.org/2000/svg";
@@ -80,6 +80,7 @@
       textElement.setAttribute('y', height / 2 + shiftY);
       textElement.setAttribute('text-anchor', 'middle');
       textElement.setAttribute('dominant-baseline', 'middle');
+      textElement.setAttribute('font-family', 'sans-serif'); // Set font
 
       // Set the initial large font size
       let fontSize = initialFontSize;
@@ -90,18 +91,20 @@
       tempSvg.setAttribute('width', width);
       tempSvg.setAttribute('height', height);
       const tempText = document.createElementNS(svgNamespace, 'text');
-      tempText.setAttribute('x', width / 2);
-      tempText.setAttribute('y', height / 2);
-      tempText.setAttribute('text-anchor', 'middle');
-      tempText.setAttribute('dominant-baseline', 'middle');
+      tempText.setAttribute('x', 0);
+      tempText.setAttribute('y', 0);
+      tempText.setAttribute('text-anchor', 'start');
+      tempText.setAttribute('dominant-baseline', 'hanging');
+      tempText.setAttribute('font-family', 'sans-serif'); // Set font
       tempSvg.appendChild(tempText);
       document.body.appendChild(tempSvg);
 
       function measureTextSize(text, fontSize) {
         tempText.textContent = text;
         tempText.setAttribute('font-size', fontSize);
+        const textWidth = tempText.getComputedTextLength();
         const bbox = tempText.getBBox();
-        return { width: bbox.width, height: bbox.height };
+        return { width: textWidth, height: bbox.height };
       }
 
       let textSize = measureTextSize(TXT, fontSize);
@@ -111,6 +114,7 @@
         fontSize -= 1;
         textElement.setAttribute('font-size', fontSize);
         textSize = measureTextSize(TXT, fontSize);
+        if (fontSize <= 0) break; // Prevent negative font size
       }
 
       document.body.removeChild(tempSvg);
