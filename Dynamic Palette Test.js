@@ -26,19 +26,25 @@ let counter = 0;
       function reporterBlockData(name) {
         counter++;
         return {
-          opcode: counter,
+          opcode: `reporter_${counter}`,
           blockType: Scratch.BlockType.REPORTER,
           text: name,
           disableMonitor: true
         }
       }
       userInput = prompt('reporter name')
-      array.push(reporterBlockData(userInput));
-      console.log(array);
-      addMethod(dynamicPaletteTest,counter,function(){
+      if (!userInput.trim==='') {
+        array.push(reporterBlockData(userInput));
+        console.log(array);
+        addMethod(dynamicPaletteTest,counter,function(){
         return Math.random()
-      });
-      vm.extensionManager.refreshBlocks();
+        });
+        vm.extensionManager.refreshBlocks();
+      } else {
+        if (true){
+          alert('reporter name cannot be empty.');
+        }
+      }
     }
   }
 
