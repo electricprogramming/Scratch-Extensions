@@ -9,6 +9,11 @@ let userInput = '';
 function addMethod(cls,methodName,method) {
   cls.prototype[methodName] = method;
 }
+function escapeBrackets(text) {
+  return text
+    .replace(/\[/g, '[')
+    .replace(/\]/g, ']');
+}
 let counter = 0;
 (function (Scratch) {
   "use strict";
@@ -26,18 +31,20 @@ let counter = 0;
       function reporterBlockData(name) {
         counter++;
         return {
-          opcode: `reporter_${counter}`,
+          opcode: `reporter${counter}`,
           blockType: Scratch.BlockType.REPORTER,
           text: name,
-          disableMonitor: true
+          disableMonitor: true,
+          args: {
+          },
         }
       }
       userInput = prompt('reporter name')
-      if (!userInput.trim==='') {
-        array.push(reporterBlockData(userInput));
+      if (!(userInput.trim()==='')) {
+        array.push(reporterBlockData(escapeBrackets(userInput)));
         console.log(array);
-        addMethod(dynamicPaletteTest,counter,function(){
-        return Math.random()
+        addMethod(dynamicPaletteTest,`reporter${counter}`,function(){
+          return Math.random();
         });
         vm.extensionManager.refreshBlocks();
       } else {
