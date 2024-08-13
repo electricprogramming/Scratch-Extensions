@@ -1,22 +1,22 @@
-let array = [
+(function (Scratch) {
+  "use strict";
+  let array = [
   {
     func: "new_reporter",
     blockType: Scratch.BlockType.BUTTON,
     text: "New Reporter",
   },
         ];
-let userInput = '';
-function addMethod(cls,methodName,method) {
-  cls.prototype[methodName] = method;
-}
-function escapeBrackets(text) {
-  return text
-    .replace(/\[/g, '[')
-    .replace(/\]/g, ']');
-}
-let counter = 0;
-(function (Scratch) {
-  "use strict";
+  let userInput = '';
+  function addMethod(cls,methodName,method) {
+    cls.prototype[methodName] = method;
+  }
+  function escapeBrackets(text) {
+    return text
+      .replace(/\[/g, '[')
+      .replace(/\]/g, ']');
+  }
+  let counter = 0;
 
   class dynamicPaletteTest {
     getInfo() {
