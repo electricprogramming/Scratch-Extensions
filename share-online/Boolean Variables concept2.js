@@ -2,123 +2,100 @@
   "use strict";
   class EnhancedMap {
     constructor(entries = []) {
-      this.map = new Map(entries);
+        this.map = new Map(entries);
     }
 
     // Add or update a key-value pair
     set(key, value) {
-      this.map.set(key, value);
+        this.map.set(key, value);
     }
 
     // Get the value for a key
     get(key) {
-      return this.map.get(key);
+        return this.map.get(key);
     }
 
     // Check if a key exists
     has(key) {
-      return this.map.has(key);
+        return this.map.has(key);
     }
 
     // Remove a key-value pair by key
     delete(key) {
-      return this.map.delete(key);
+        return this.map.delete(key);
     }
 
     // Remove all key-value pairs
     clear() {
-      this.map.clear();
+        this.map.clear();
     }
 
     // Get the number of key-value pairs
     size() {
-      return this.map.size;
+        return this.map.size;
     }
 
     // Iterate over keys
     forEachKey(callback) {
-      for (let key of this.map.keys()) {
-        callback(key);
-      }
+        for (let key of this.map.keys()) {
+            callback(key);
+        }
     }
 
     // Iterate over values
     forEachValue(callback) {
-      for (let value of this.map.values()) {
-        callback(value);
-      }
+        for (let value of this.map.values()) {
+            callback(value);
+        }
     }
 
     // Iterate over entries (key-value pairs)
     forEachEntry(callback) {
-      for (let [key, value] of this.map.entries()) {
-        callback(key, value);
-      }
+        for (let [key, value] of this.map.entries()) {
+            callback(key, value);
+        }
     }
 
     // Convert Map to an array of entries
     toArray() {
-      return Array.from(this.map.entries());
+        return Array.from(this.map.entries());
     }
 
     // Convert Map to an array of keys
     keysArray() {
-      return Array.from(this.map.keys());
+        return Array.from(this.map.keys());
     }
 
     // Convert Map to an array of values
     valuesArray() {
-      return Array.from(this.map.values());
+        return Array.from(this.map.values());
     }
 
-    // Serialize the EnhancedMap to a string
+    // Serialize the EnhancedMap to a JSON string
     serialize() {
-      // Helper function to escape special characters
-      const escapeString = (str) => {
-        return str.replace(/\\/g, '\\\\') // Escape backslashes
-                  .replace(/"/g, '\\"')   // Escape double quotes
-                  .replace(/=/g, '\\=')   // Escape equals signs
-                  .replace(/</g, '\\<')   // Escape less-than signs
-                  .replace(/>/g, '\\>');  // Escape greater-than signs
-      };
-
-      const entriesArray = Array.from(this.map.entries())
-        .map(([key, value]) => 
-          `"${escapeString(key)}"="${escapeString(value)}"`
-        )
-        .join(',');
-
-      return `<${entriesArray}>`;
+        // Convert map to a plain object
+        const obj = Object.fromEntries(this.map);
+        // Convert object to JSON string
+        return JSON.stringify(obj);
     }
 
-    // Deserialize a string into the EnhancedMap
+    // Deserialize a JSON string into the EnhancedMap
     deserialize(serialized) {
-      // Remove angle brackets and split by commas
-      const innerString = serialized.slice(1, -1);
-      const pairs = innerString.split(/,(?![^"]*"\s*=\s*")/); // Split on commas not within quoted strings
-
-      // Helper function to unescape special characters
-      const unescapeString = (str) => {
-        return str.replace(/\\</g, '<')   // Unescape less-than signs
-                  .replace(/\\>/g, '>')   // Unescape greater-than signs
-                  .replace(/\\=/g, '=')   // Unescape equals signs
-                  .replace(/\\"/g, '"')   // Unescape double quotes
-                  .replace(/\\\\/g, '\\'); // Unescape backslashes
-      };
-
-      this.clear(); // Clear existing map
-
-      for (const pair of pairs) {
-        // Match key and value using regular expression
-        const match = pair.match(/^"([^"]+)"="([^"]+)"$/);
-        if (match) {
-          const key = unescapeString(match[1]);
-          const value = unescapeString(match[2]);
-          this.set(key, value);
-        }
-      }
+        // Parse JSON string to object
+        const obj = JSON.parse(serialized);
+        // Clear existing map and populate with new data
+        this.clear();
+        Object.entries(obj).forEach(([key, value]) => {
+            this.set(key, value);
+        });
     }
-  } //serialization and desrialization are buggy
+  }
+  function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
   class customProjectStorage {
     static set(data) {
       const customData = data;
@@ -177,8 +154,9 @@
       console.log('Searching for relevant comment');
       for (const id in stage.comments) {
         const comment = stage.comments[id];
-        if (comment.text.startsWith("CONFIGURATION FOR TEST EXTENSION:")) {
-          const prefix = `CONFIGURATION FOR TEST EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
+        if (comment.text.startsWith(`CONFIGURATION FOR BOOLEAN VARIABLES EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
+`)) {
+          const prefix = `CONFIGURATION FOR BOOLEAN VARIABLES EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
 `;
           const data = comment.text.slice(prefix.length).trim();
           console.log('Found comment data');
@@ -190,23 +168,82 @@
       return '';
     }
   }
+  const bool_vars = new EnhancedMap;
+  let blocksArray = [
+    {
+      func: "new_bool_var",
+      blockType: Scratch.BlockType.BUTTON,
+      text: "New Boolean Variable",
+    },
+    {
+      opcode: "set_bool_var_menu",
+      blockType: Scratch.BlockType.COMMAND,
+      text: "set [boolVarsMenu] to [trueFalseMenu]",
+      arguments: {
+        boolVarsMenu: {
+          type: Scratch.ArgumentType.STRING,
+          menu: 'boolVars',
+        },
+        trueFalseMenu: {
+          type: Scratch.ArgumentType.STRING,
+          menu: 'trueFalse',
+          defaultValue: true,
+        }
+      }
+    },
+    {
+      opcode: "set_bool_var_input",
+      blockType: Scratch.BlockType.COMMAND,
+      text: "set [boolVarsMenu] to [value]",
+      arguments: {
+        boolVarsMenu: {
+          type: Scratch.ArgumentType.STRING,
+          menu: 'boolVars',
+        },
+        value: {
+          type: Scratch.ArgumentType.BOOLEAN,
+        }
+      }
+    }
+  ]
+  function addMethod(cls,methodName,method) {
+    cls.prototype[methodName]=method;
+  }
   class booleanVariables {
     getInfo() {
       return {
         id: "booleanVariables",
         name: "Boolean Variables",
-        blocks: [
-          {
-            func: "new_bool_var",
-            blockType: Scratch.BlockType.BUTTON,
-            text: "New Boolean Variable",
+        blocks: blocksArray,
+        menus: {
+          boolVars: {
+            items: bool_vars.keysArray(),
+            defaultValue: bool_vars.keysArray()[0],
+            acceptReporters: true,
+          },
+          trueFalse: {
+            items: ['true','false'],
+            acceptReporters: false,
           }
-        ]
+        },
       };
     }
 
     new_bool_var() {
       const boolVarName = prompt('What should the boolean variable be called?')
+      if (!(bool_vars.has(boolVarName))) {
+        bool_vars.set(boolVarName, false)
+        blocksArray.push(
+          {
+            opcode: 'hello',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'hello'
+          }
+        )
+        vm.extensionManager.refreshBlocks();
+      } else {
+        alert(`A boolean variable named ${boolVarName} already exists.`)
+      }
     }
   }
 
