@@ -1,4 +1,5 @@
-// Modified from https://extensions.turbowarp.org/godslayerakp/ws.js which is available under the MIT license
+// Modified from https://extensions.turbowarp.org/godslayerakp/ws.js
+// Original code available under the MIT license
 // this version has the same blocks, but connections are universal, not by sprite.
 // this helps with something like an online multiplayer game, where cloud clones need to be reading data from the same connection as the main player is sending data, or something like that.
 (function (Scratch) {
