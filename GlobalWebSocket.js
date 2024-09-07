@@ -66,7 +66,7 @@
 
     getInfo() {
       return {
-        id: "gsaWebsocket",
+        id: "epGlobalWebsocket",
         name: "WebSocket",
         color1: "#307eff",
         color2: "#2c5eb0",
@@ -260,7 +260,7 @@
                     } else {
                       this.instance.data = this.instance.messageQueue.shift();
                       this.instance.messageThreads = runtime.startHats(
-                        "gsaWebsocket_onMessage",
+                        "epGlobalWebsocket_onMessage",
                         null,
                         util.target
                       );
@@ -299,7 +299,7 @@
                 this.instance.sendOnceConnected.length = 0;
 
                 this.instance.connectThreads = runtime.startHats(
-                  "gsaWebsocket_onOpen",
+                  "epGlobalWebsocket_onOpen",
                   null,
                   util.target
                 );
@@ -313,7 +313,7 @@
                   cleanup();
 
                   if (!this.instance.destroyed) {
-                    runtime.startHats("gsaWebsocket_onClose", null, util.target);
+                    runtime.startHats("epGlobalWebsocket_onClose", null, util.target);
                   }
                 }
               };
@@ -324,7 +324,7 @@
                 cleanup();
 
                 if (!this.instance.destroyed) {
-                  runtime.startHats("gsaWebsocket_onError", null, util.target);
+                  runtime.startHats("epGlobalWebsocket_onError", null, util.target);
                 }
               };
 
@@ -344,7 +344,7 @@
                   this.instance.data = data;
                   this.instance.messageThreadsRunning = true;
                   this.instance.messageThreads = runtime.startHats(
-                    "gsaWebsocket_onMessage",
+                    "epGlobalWebsocket_onMessage",
                     null,
                     util.target
                   );
@@ -361,7 +361,7 @@
       if (!this.instance.websocket) {
         return;
       }
-      return Scratch.runtime.startHats("gsaWebsocket_onOpen", null, util.target);
+      return Scratch.runtime.startHats("epGlobalWebsocket_onOpen", null, util.target);
     }
 
     isConnected() {
@@ -372,7 +372,7 @@
       if (!this.instance.websocket) {
         return;
       }
-      return Scratch.runtime.startHats("gsaWebsocket_onMessage", null, util.target);
+      return Scratch.runtime.startHats("epGlobalWebsocket_onMessage", null, util.target);
     }
 
     messageData() {
@@ -391,7 +391,7 @@
       if (!this.instance.websocket) {
         return;
       }
-      return Scratch.runtime.startHats("gsaWebsocket_onError", null, util.target);
+      return Scratch.runtime.startHats("epGlobalWebsocket_onError", null, util.target);
     }
 
     hasErrored() {
@@ -402,7 +402,7 @@
       if (!this.instance.websocket) {
         return;
       }
-      return Scratch.runtime.startHats("gsaWebsocket_onClose", null, util.target);
+      return Scratch.runtime.startHats("epGlobalWebsocket_onClose", null, util.target);
     }
 
     isClosed() {
