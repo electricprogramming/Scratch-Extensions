@@ -72,8 +72,8 @@
       return {
         id: "epGlobalWebsocket",
         name: "WebSocket",
-        color1: "#307eff",
-        color2: "#2c5eb0",
+        color1: "#228739",
+        color2: "#22aa39",
         blocks: [
           {
             opcode: "connectToUrl",
