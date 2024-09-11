@@ -66,9 +66,9 @@
           blockID: null,
           x: 100,
           y: 100,
-          width: 200, // Set the default width
-          height: 100, // Set the default height
-          minimized: false // Set default minimized state
+          width: 200,
+          height: 100,
+          minimized: false
         };
         stage.comments[comment.id] = comment;
       } else {
