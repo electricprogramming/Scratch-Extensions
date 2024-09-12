@@ -51,7 +51,8 @@
       let comment = null;
       for (const id in stage.comments) {
         const commentData = stage.comments[id];
-        if (commentData.text.startsWith("CONFIGURATION FOR TEST EXTENSION:")) {
+        if (commentData.text.startsWith(`CONFIGURATION FOR TEST EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
+`)) {
           comment = commentData;
           break;
         }
