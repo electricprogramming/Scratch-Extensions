@@ -38,6 +38,7 @@
       return {
         id: "epReplacers",
         name: "Text Replacers",
+        color1: "#59C059",
         blocks: [
           {
             opcode: "resetReplacers",
