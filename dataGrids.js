@@ -6,6 +6,25 @@
       action(i);
     }
   }
+  function toInteger(value) {
+    if (Number.isInteger(value)) {
+      return value;
+    }
+
+    if (typeof value === 'number') {
+      return Math.round(value);
+    }
+
+    if (typeof value === 'string') {
+      const match = value.trim().match(/^[-+]?\d*\.?\d+$/);
+      if (match) {
+        return Math.round(parseFloat(match[0]));
+      }
+      return 0;
+    }
+
+    return 0;
+  }
   const customStorage = (function() {
     function generateUUID() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -92,78 +111,13 @@
       get
     };
   })();
-  class MapPlus {
-    #map = new Map(); // Internal storage for key-value pairs
-
-    constructor(entries = []) {
-      // Initialize the map with optional entries
-      this.#map = new Map(entries);
-    }
-
-    // Add or update a key-value pair
-    set(key, value) {
-      this.#map.set(key, value);
-    }
-
-    // Get the value associated with a key
-    get(key) {
-      return this.#map.get(key);
-    }
-
-    // Remove a key-value pair
-    delete(key) {
-      this.#map.delete(key);
-    }
-
-    // Check if a key exists
-    has(key) {
-      return this.#map.has(key);
-    }
-
-    // size of map
-    size() {
-      return this.#map.size
-    }
-
-    // Get all keys
-    keys() {
-      return Array.from(this.#map.keys());
-    }
-
-    // Get all values
-    values() {
-      return Array.from(this.#map.values());
-    }
-
-    // Get all key-value pairs
-    entries() {
-      return Array.from(this.#map.entries());
-    }
-
-    // Clear all key-value pairs
-    clear() {
-      this.#map.clear();
-    }
-
-    // Serialize the MapPlus instance to JSON
-    serialize() {
-      return JSON.stringify(Array.from(this.#map.entries()));
-    }
-
-    // Deserialize a JSON string to create a MapPlus instance
-    static deserialize(json) {
-      const entries = JSON.parse(json);
-      return new MapPlus(entries);
-    }
-  }
   class Grid {
     #gridWidth;
     #gridHeight;
     #gridItems;
-
     constructor(width, height) {
-      this.#gridWidth = width < 1 ? 1 : width;
-      this.#gridHeight = height < 1 ? 1 : height;
+      this.#gridWidth = toInteger(width);
+      this.#gridHeight = toInteger(height);
       this.#gridItems = Array.from({ length: this.#gridHeight }, () => this.#blankArray(this.#gridWidth)); // new blank array instance for each row so that rows can be modified individually.
     }
 
@@ -364,7 +318,7 @@
       });
     }
   }
-  let GridsMap = new MapPlus();
+  let GridsObj = {}
   class dataGrids {
     getInfo() {
       return {
@@ -380,15 +334,21 @@
             func: "removeGrid",
             blockType: Scratch.BlockType.BUTTON,
             text: "Remove a Grid",
-            hideFromPalette: MapPlus.size() > 0
+            hideFromPalette: GridsObj.size() > 0
           }
         ]
       };
     }
     newGrid() {
       const input = prompt('what should the grid be called?')
+      if (input in GridsObj) {
+        alert('This name is already in use.')
+      } else {
+        GridsObj[input] = new Grid(0,0)
+      }
     }
   }
 
   Scratch.extensions.register(new dataGrids());
 })(Scratch);
+// implement methods... refer to sharkpool's color editor extension for reporters that are dragged out of hats/loops... the question is how to make loops inside of loops work.
