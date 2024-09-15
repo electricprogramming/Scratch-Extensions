@@ -260,17 +260,11 @@
     }
 
     forEachItem(action) {
-      let currentX = 1;
-      let currentY = 1;
-      let currentRow = this.#gridItems[currentY];
-      repeat(this.#gridWidth * this.#gridHeight, () => {
-        action(currentX, currentY, currentRow[currentX - 1]);
-        if (currentX == this.#gridWidth) {
-          currentX = 0;
-          currentY++;
-          currentRow = this.#gridItems[currentY - 1];
-        }
-        currentX++;
+      repeat(this.#gridHeight, (y) => {
+        const row = this.#gridItems[y];
+        repeat(this.#gridWidth, (x) => {
+          action(x + 1, y + 1, row[x]);
+        });
       });
     }
 
@@ -318,8 +312,10 @@
       });
     }
   }
-  let GridsObj = {}
   class dataGrids {
+    constructor() {
+      this.gridsData = {}
+    }
     getInfo() {
       return {
         id: "epDataGrids",
@@ -334,17 +330,28 @@
             func: "removeGrid",
             blockType: Scratch.BlockType.BUTTON,
             text: "Remove a Grid",
-            hideFromPalette: GridsObj.size() > 0
+            hideFromPalette: Object.keys(this.gridsData).length === 0
           }
         ]
       };
     }
     newGrid() {
       const input = prompt('what should the grid be called?')
-      if (input in GridsObj) {
-        alert('This name is already in use.')
-      } else {
-        GridsObj[input] = new Grid(0,0)
+      if (input !== null) {
+        if (input in this.gridsData) {
+          alert('This name is already in use.')
+        } else if (input == '') {
+          alert('The name cannot be empty.')
+        } else if (input.includes('[')||input.includes(']')){
+          alert('The name cannot include square brackets.')
+        } else {
+          this.gridsData[input] = new Grid(0,0)
+        }
+      }
+    }
+    removeGrid() {
+      if ('') {
+        
       }
     }
   }
