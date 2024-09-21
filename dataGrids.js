@@ -1,133 +1,85 @@
 (function (Scratch) {
   "use strict";
-  const vm = Scratch.vm
-  function repeat(count, action) {
-    for (let i = 0; i < count; i++) {
-      action(i);
-    }
+  function repeat(count = 0, action = ()=> {}) {  
+      for (let i = 0; i < count; i++) {
+        const escapeLoop = () => {
+          throw new Error('EscapeLoop');
+        };
+        const continueLoop = () => {
+          throw new Error('ContinueLoop');
+        };
+        try {
+          action(i, escapeLoop, continueLoop);
+        } catch (e) {
+          if (e.message === 'EscapeLoop') {
+            break;
+          } else if (e.message === 'ContinueLoop') {
+            continue;
+          } else {
+            throw e;
+          }
+        }
+      }
   }
   function toInteger(value) {
-    if (Number.isInteger(value)) {
-      return value;
-    }
-
-    if (typeof value === 'number') {
-      return Math.round(value);
-    }
-
-    if (typeof value === 'string') {
-      const match = value.trim().match(/^[-+]?\d*\.?\d+$/);
-      if (match) {
-        return Math.round(parseFloat(match[0]));
+      if (Number.isInteger(value)) {
+        return value;
+      }
+      if (typeof value === 'number') {
+        return Math.round(value);
+      }
+      if (typeof value === 'string') {
+        const match = value.trim().match(/^[-+]?\d*\.?\d+$/);
+        if (match) {
+          return Math.round(parseFloat(match[0]));
+        }
+        return 0;
       }
       return 0;
     }
-
-    return 0;
-  }
-  const customStorage = (function() {
-    function generateUUID() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
-    }
-
-    function set(args) {
-      const data = args.TEXT;
-      const stage = vm.runtime.targets.find(target => target.isStage);
-
-      if (!stage) {
-        console.error('Stage not found');
-        return;
-      }
-
-      let comment = null;
-      for (const id in stage.comments) {
-        const commentData = stage.comments[id];
-        if (commentData.text.startsWith(`CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-`)) {
-          comment = commentData;
-          break;
-        }
-      }
-
-      if (!comment) {
-        console.log('Creating new comment');
-        comment = {
-          id: generateUUID(),
-          text: `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-` + data,
-          blockID: null,
-          x: 100,
-          y: 100,
-          width: 200,
-          height: 100,
-          minimized: false
-        };
-        stage.comments[comment.id] = comment;
-      } else {
-        console.log('Updating comment text');
-        comment.text = `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-` + data;
-      }
-
-      // Request a re-render of blocks and comments
-      vm.runtime.emitProjectChanged();
-    }
-
-    function get() {
-      const stage = vm.runtime.targets.find(target => target.isStage);
-
-      if (!stage) {
-        console.error('Stage not found');
-        return '';
-      }
-
-      if (Object.keys(stage.comments).length === 0) {
-        console.log('No comments found');
-        return '';
-      }
-
-      console.log('Searching for relevant comment');
-      for (const id in stage.comments) {
-        const comment = stage.comments[id];
-        if (comment.text.startsWith("CONFIGURATION FOR DATA GRIDS EXTENSION:")) {
-          const prefix = `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-`;
-          const data = comment.text.slice(prefix.length).trim();
-          console.log('Found comment data');
-          return data;
-        }
-      }
-
-      console.log('No relevant comment found');
-      return '';
-    }
-
-    // Expose public methods
-    return {
-      set,
-      get
-    };
-  })();
-  class Grid {
+  class Grid { // 1-based
     #gridWidth;
     #gridHeight;
     #gridItems;
-    constructor(width, height) {
-      this.#gridWidth = toInteger(width);
-      this.#gridHeight = toInteger(height);
-      this.#gridItems = Array.from({ length: this.#gridHeight }, () => this.#blankArray(this.#gridWidth)); // new blank array instance for each row so that rows can be modified individually.
+    constructor(nestedArray = []) {
+      if (!(Array.isArray(nestedArray))) {
+        nestedArray = []
+        console.error('Data Grids: constructor - not an array')
+      }
+      let expectedLength;
+      repeat(nestedArray.length, (i,escapeLoop) => {
+        if (i === 0) {
+          expectedLength = nestedArray[i].length
+        } else {
+          if (nestedArray[i].length !== expectedLength) {
+            nestedArray = []
+            console.error('Data Grids: constructor - array subarrays are not the same size')
+            escapeLoop();
+          }
+        }
+      })
+      this.#gridItems = nestedArray
+      this.#gridWidth = nestedArray[0]? nestedArray[0].length : 0
+      this.#gridHeight = nestedArray.length
     }
-
-    #blankArray(length) {
-      return Array(length).fill('');
+    #blankArray(size = 0) {
+      return Array(size).fill('');
     }
-
-    addRows(count) {
+    static new(width = 0,height = 0) {
+      return new Grid(Array.from({ length: toInteger(height) }, () => Array(toInteger(width)).fill('')))
+    }
+    static deserialize(stringifiedArray = '[]') {
+      try {
+        var gridData = JSON.parse(stringifiedArray)
+      } catch(e) {
+        console.error('Data Grids: Deserialization error -- ', e.message)
+        gridData = []
+      }
+      return new Grid(gridData)
+    }
+    addRows(count = 0) {
       if (count < 0) {
-        console.error('Count must not be negative.');
+        console.error('Data Grids: addRows count must not be negative.')
       } else {
         this.#gridHeight += count;
         repeat(count, () => {
@@ -135,10 +87,9 @@
         });
       }
     }
-
-    addColumns(count) {
+    addColumns(count = 0) {
       if (count < 0) {
-        console.error('Count must not be negative.');
+        console.error('Data Grids: addColumns count must not be negative.')
       } else {
         this.#gridWidth += count;
         repeat(this.#gridHeight, (i) => {
@@ -149,12 +100,11 @@
         });
       }
     }
-
-    insertRows(count, idx) {
+    insertRows(count = 0, idx = 1) {
       if (idx < 1 || idx > this.#gridHeight + 1) {
-        console.error('Index out of bounds');
+        console.error('Data Grids: row insertion index out of bounds');
       } else if (count < 0) {
-        console.error('Count must not be negative.');
+        console.error('Data Grids: row insertion count must not be negative')
       } else {
         this.#gridHeight += count;
         repeat(count, () => {
@@ -162,12 +112,11 @@
         });
       }
     }
-
-    insertColumns(count, idx) {
+    insertColumns(count = 0, idx = 1) {
       if (idx < 1 || idx > this.#gridHeight + 1) {
-        console.error('Index out of bounds');
+        console.error('Data Grids: column insertion index out of bounds');
       } else if (count < 0) {
-        console.error('Count must not be negative.');
+        console.error('Data Grids: column insertion count must not be negative')
       } else {
         this.#gridWidth += count;
         repeat(this.#gridHeight, (i) => {
@@ -178,19 +127,17 @@
         });
       }
     }
-
-    deleteRow(rowNum) {
+    deleteRow(rowNum = 0) {
       if (rowNum < 1 || rowNum > this.#gridHeight) {
-        console.error('Index out of bounds');
+        console.error('Data Grids: row deletion index out of bounds');
       } else {
         this.#gridHeight -= 1;
         this.#gridItems.splice(rowNum - 1, 1);
       }
     }
-
-    deleteColumn(columnNum) {
+    deleteColumn(columnNum = 0) {
       if (columnNum < 1 || columnNum > this.#gridWidth) {
-        console.error('Index out of bounds');
+        console.error('Data Grids: column deletion index out of bounds');
       } else {
         this.#gridWidth -= 1;
         repeat(this.#gridHeight, (i) => {
@@ -199,33 +146,34 @@
         });
       }
     }
-
-    set(x, y, val) {
+    set(x = 0, y = 0, val = '') {
       if (x < 1 || x > this.#gridWidth || y < 1 || y > this.#gridHeight) {
-        throw new Error('Index out of bounds');
+        console.error('Data Grids: cell value setting index out of bounds');
       } else {
         const rowToEdit = this.#gridItems[y - 1];
         rowToEdit[x - 1] = val;
       }
     }
-
-    get(x, y) {
-      const row = this.#gridItems[y - 1];
-      return row[x - 1];
+    get(x = 0, y = 0) {
+      if (x < 1 || x > this.#gridWidth || y < 1 || y > this.#gridHeight) {
+        console.error('Data Grids: cell value fetch index out of bounds')
+        return ''
+      } else {
+        const row = this.#gridItems[y - 1];
+        return row[x - 1];
+      }
     }
-
-    getRow(rowNum) {
+    getRow(rowNum = 0) {
       if (rowNum < 1 || rowNum > this.#gridHeight) {
-        console.error('Index is out of bounds');
+        console.error('Data Grids: row fetch index out of bounds');
         return [];
       } else {
         return this.#gridItems[rowNum - 1];
       }
     }
-
-    getColumn(columnNum) {
+    getColumn(columnNum = 0) {
       if (columnNum < 1 || columnNum > this.#gridWidth) {
-        console.error('Index is out of bounds');
+        console.error('Data Grids: column fetch index out of bounds');
         return [];
       } else {
         let column = [];
@@ -236,30 +184,19 @@
         return column;
       }
     }
-
     getWidth() {
       return this.#gridWidth;
     }
-
     getHeight() {
       return this.#gridHeight;
     }
-
     serialize() {
       return JSON.stringify(this.#gridItems);
     }
-
     getItems() {
       return this.#gridItems;
     }
-
-    deserialize(serialized) {
-      this.#gridItems = JSON.parse(serialized);
-      this.#gridHeight = this.#gridItems.length;
-      this.#gridWidth = this.#gridHeight > 0 ? this.#gridItems[0].length : 0;
-    }
-
-    forEachItem(action) {
+    forEachItem(action = () => {}) {
       repeat(this.#gridHeight, (y) => {
         const row = this.#gridItems[y];
         repeat(this.#gridWidth, (x) => {
@@ -267,55 +204,46 @@
         });
       });
     }
-
-    forEachRow(action) {
+    forEachRow(action = () => {}) {
       repeat(this.#gridHeight, (idx) => {
         action(idx + 1, this.#gridItems[idx]);
       });
     }
-
-    forEachColumn(action) {
+    forEachColumn(action = () => {}) {
       repeat(this.#gridWidth, (idx) => {
         const currentColumn = this.getColumn(idx + 1);
         action(idx + 1, currentColumn);
       });
     }
-
-    fill(val) {
-      this.forEachItem((x, y) => {
-        this.set(x, y, val);
-      });
+    fill(val = '') {
+      this.forEachItem((x,y) => {
+        this.set(x,y,val)
+      })
     }
-
     clear() {
-      this.fill('');
+      this.fill('')
     }
-
-    findAll(item) {
-      let instances = [];
-      this.forEachItem((x, y, val) => {
+    findAll(item = '') {
+      let instances = []
+      this.forEachItem((x,y,val) => {
         if (val == item) {
-          let object = {};
-          object['x'] = x;
-          object['y'] = y;
-          instances.push(object);
+          let object = {}
+          object['x'] = x
+          object['y'] = y
+          instances.push(object)
         }
-      });
+      })
       return instances;
     }
-
-    replaceAll(oldVal, newVal) {
-      this.forEachItem((x, y, val) => {
+    replaceAll(oldVal = '', newVal = '') {
+      this.forEachItem((x,y,val) => {
         if (val == oldVal) {
-          this.set(x, y, newVal);
+          this.set(x,y,newVal)
         }
-      });
+      })
     }
   }
-  class dataGrids {
-    constructor() {
-      this.gridsData = {}
-    }
+  class ScratchDataGrids {
     getInfo() {
       return {
         id: "epDataGrids",
@@ -325,37 +253,15 @@
             func: "newGrid",
             blockType: Scratch.BlockType.BUTTON,
             text: "New Grid",
-          },
-          {
-            func: "removeGrid",
-            blockType: Scratch.BlockType.BUTTON,
-            text: "Remove a Grid",
-            hideFromPalette: Object.keys(this.gridsData).length === 0
           }
         ]
       };
     }
+
     newGrid() {
-      const input = prompt('what should the grid be called?')
-      if (input !== null) {
-        if (input in this.gridsData) {
-          alert('This name is already in use.')
-        } else if (input == '') {
-          alert('The name cannot be empty.')
-        } else if (input.includes('[')||input.includes(']')){
-          alert('The name cannot include square brackets.')
-        } else {
-          this.gridsData[input] = new Grid(0,0)
-        }
-      }
-    }
-    removeGrid() {
-      if ('') {
-        
-      }
+      
     }
   }
 
-  Scratch.extensions.register(new dataGrids());
+  Scratch.extensions.register(new ScratchDataGrids());
 })(Scratch);
-// implement methods... refer to sharkpool's color editor extension for reporters that are dragged out of hats/loops... the question is how to make loops inside of loops work.
