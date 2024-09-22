@@ -1,5 +1,33 @@
 (function (Scratch) {
   "use strict";
+  const FunctionGroup = (() => {
+    class FunctionGroup {
+      constructor(...functions) {
+        for (let i = 0; i < functions.length; i += 2) {
+          const name = functions[i];
+          const func = functions[i + 1];
+          if (typeof name !== 'string' || typeof func !== 'function') {
+            throw new TypeError(`Expected a string name and a function for pair at index ${i}.`);
+          }
+          this[name] = func.bind(this);
+        }
+        Object.seal(this); // Seal the instance
+      }
+    }
+    
+    // Seal the prototype to prevent adding properties
+    Object.seal(FunctionGroup.prototype);
+    
+    return FunctionGroup;
+  })();
+  const customStorage = new FunctionGroup(
+    'set',(value) => {
+      //set custom storage
+    },
+    'get',() => {
+      //get custom storage
+    }
+  )
   function repeat(count = 0, action = ()=> {}) {  
       for (let i = 0; i < count; i++) {
         const escapeLoop = () => {
@@ -274,6 +302,13 @@
         }
       );
       const gridName = prompt('What should the grid be called?',defaultGridName);
+      if (gridName in grids) {
+        alert('This grid name is in use.')
+      } else if (gridName.includes('[') || gridName.includes(']')) {
+        alert('Grid names cannot contain square brackets - [ or ]')
+      } else {
+        grids[gridName] = Grid.new(0,0)
+      }
     }
   }
 
