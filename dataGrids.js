@@ -243,6 +243,7 @@
       })
     }
   }
+  let grids = {};
   class ScratchDataGrids {
     getInfo() {
       return {
@@ -262,7 +263,17 @@
     }
 
     newGrid() {
-      
+      var defaultGridNameNum = 1;
+      var defaultGridName = `my grid ${defaultGridNameNum}`;
+      Object.keys(grids).forEach(
+        key => {
+          if (key == defaultGridName) {
+            defaultGridNameNum += 1;
+            defaultGridName = `my grid ${defaultGridNameNum}`
+          }
+        }
+      );
+      const gridName = prompt('What should the grid be called?',defaultGridName);
     }
   }
 
