@@ -254,7 +254,10 @@
             blockType: Scratch.BlockType.BUTTON,
             text: "New Grid",
           }
-        ]
+        ],
+        menus: {
+          
+        }
       };
     }
 
