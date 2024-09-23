@@ -305,6 +305,12 @@
             blockType: Scratch.BlockType.BUTTON,
             text: 'Delete a Grid',
             hideFromPalette: Object.keys(grids).length === 0
+          },
+          {
+            opcode: 'getGrids',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'all grids',
+            disableMonitor: true
           }
         ],
         menus: {
@@ -342,13 +348,16 @@
     deleteGrid() {
       const toDelete = prompt('What is the grid that should be deleted called?');
       if (toDelete in grids) {
-        if (confirm(`Are you sure you want to delete grid ${JSON.stringify('yo')}`)) {
-          delete grids.toDelete; 
+        if (confirm(`Are you sure you want to delete grid ${JSON.stringify(toDelete)}`)) {
+          delete grids[toDelete];
           vm.extensionManager.refreshBlocks();
         }
       } else {
-        alert('Grid not found')
+        alert(`Grid ${JSON.stringify(toDelete)} not found`)
       }
+    }
+    getGrids() {
+      return JSON.stringify(Object.keys(grids))
     }
   }
 
