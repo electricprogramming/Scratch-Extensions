@@ -244,7 +244,7 @@
     serializeArray() {
       return JSON.stringify(this.#gridItems);
     }
-    serializeJSON() {
+    serializeObject() {
       var serialized = {};
       this.forEachRow(
         (rowNum,rowAsArray) => {
@@ -294,17 +294,86 @@
       return {
         id: 'epDataGrids',
         name: 'Data Grids',
+        color1: '#ff280a',
+        color2: '#b2220a',
         blocks: [
           {
             func: 'newGrid',
             blockType: Scratch.BlockType.BUTTON,
             text: 'New Grid',
+            hideFromPalette: false
           },
           {
             func: 'deleteGrid',
             blockType: Scratch.BlockType.BUTTON,
             text: 'Delete a Grid',
             hideFromPalette: Object.keys(grids).length === 0
+          },
+          {
+            opcode: 'addRows',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'add [count] rows to grid [gridName]',
+            arguments: {
+              count: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1'
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            hideFromPalette: false
+          },
+          {
+            opcode: 'addColumns',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'add [count] columns to grid [gridName]',
+            arguments: {
+              count: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            hideFromPalette: false
+          },
+          {
+            opcode: 'insertRows',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'insert [count] rows into grid [gridName] at index [idx]',
+            arguments: {
+              count: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu',
+              },
+              idx: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              }
+            }
+          },
+          {
+            opcode: 'serialize',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'grid [gridName] as [valueType]',
+            arguments: {
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              },
+              valueType: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'JSONtype'
+              }
+            }
           },
           {
             opcode: 'getGrids',
@@ -315,14 +384,18 @@
         ],
         menus: {
           gridMenu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: 'getGridMenu'
+          },
+          JSONtype: {
+            acceptReporters: false,
+            items: ['Array','Object']
           }
         }
       };
     }
     getGridMenu() {
-      return Object.keys(grids)
+      return Object.keys(grids).length === 0? [''] : Object.keys(grids)
     }
     newGrid() {
       var defaultGridNameNum = 1;
@@ -354,6 +427,42 @@
         }
       } else {
         alert(`Grid ${JSON.stringify(toDelete)} not found`)
+      }
+    }
+    addRows(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName].addRows(args.count)
+      } else {
+        console.error('Data Grids: Grid not found')
+      }
+    }
+    addColumns(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName].addColumns(args.count)
+      } else {
+        console.error('Data Grids: Grid not found')
+      }
+    }
+    insertRows(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName].insertRows(args.count,args.idx)
+      } else {
+        console.error('Data Grids: Grid not found')
+      }
+    }
+    insertColumns(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName].insertColumns(args.count,args.idx)
+      } else {
+        console.error('Data Grids: Grid not found')
+      }
+    }
+    serialize(args) {
+      if(args.gridName in grids) {
+        return args.valueType === 'Array' ? grids[args.gridName].serializeArray() : grids[args.gridName].serializeObject()
+      } else {
+        console.error('Data Grids: Grid not found')
+        return args.valueType === 'Array' ? '[]' : '{}'
       }
     }
     getGrids() {
