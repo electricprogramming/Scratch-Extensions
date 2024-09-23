@@ -325,22 +325,30 @@
         key => {
           if (key == defaultGridName) {
             defaultGridNameNum += 1;
-            defaultGridName = `my grid ${defaultGridNameNum}`
+            defaultGridName = `my grid ${defaultGridNameNum}`;
           }
         }
       );
       const gridName = prompt('What should the grid be called?',defaultGridName);
       if (gridName in grids) {
-        alert('This grid name is in use.')
+        alert('This grid name is in use.');
       } else if (gridName.includes('[') || gridName.includes(']')) {
-        alert('Grid names cannot contain square brackets - [ or ]')
+        alert('Grid names cannot contain square brackets - [ or ]');
       } else {
-        grids[gridName] = Grid.new(0,0)
+        grids[gridName] = Grid.new(0,0);
       }
       vm.extensionManager.refreshBlocks();
     }
     deleteGrid() {
-      const toDelete = prompt('What is the grid that should be deleted called?')
+      const toDelete = prompt('What is the grid that should be deleted called?');
+      if (toDelete in grids) {
+        if (confirm(`Are you sure you want to delete grid ${JSON.stringify('yo')}`)) {
+          delete grids.toDelete; 
+          vm.extensionManager.refreshBlocks();
+        }
+      } else {
+        alert('Grid not found')
+      }
     }
   }
 
