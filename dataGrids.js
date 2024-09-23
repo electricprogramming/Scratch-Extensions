@@ -1,5 +1,6 @@
 (function (Scratch) {
   "use strict";
+  const vm = Scratch.vm
   function repeat(count = 0, action = ()=> {}) {  
       for (let i = 0; i < count; i++) {
         const escapeLoop = () => {
@@ -291,21 +292,32 @@
   class ScratchDataGrids {
     getInfo() {
       return {
-        id: "epDataGrids",
-        name: "Data Grids",
+        id: 'epDataGrids',
+        name: 'Data Grids',
         blocks: [
           {
-            func: "newGrid",
+            func: 'newGrid',
             blockType: Scratch.BlockType.BUTTON,
-            text: "New Grid",
+            text: 'New Grid',
+          },
+          {
+            func: 'deleteGrid',
+            blockType: Scratch.BlockType.BUTTON,
+            text: 'Delete a Grid',
+            hideFromPalette: Object.keys(grids).length === 0
           }
         ],
         menus: {
-          
+          gridMenu: {
+            acceptReporters: false,
+            items: 'getGridMenu'
+          }
         }
       };
     }
-
+    getGridMenu() {
+      return Object.keys(grids)
+    }
     newGrid() {
       var defaultGridNameNum = 1;
       var defaultGridName = `my grid ${defaultGridNameNum}`;
@@ -325,6 +337,10 @@
       } else {
         grids[gridName] = Grid.new(0,0)
       }
+      vm.extensionManager.refreshBlocks();
+    }
+    deleteGrid() {
+      const toDelete = prompt('What is the grid that should be deleted called?')
     }
   }
 
