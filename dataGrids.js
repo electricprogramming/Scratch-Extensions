@@ -63,10 +63,10 @@
   })();
   const customStorage = new FunctionGroup(
     'set',(value) => {
-      //set custom storage
+      // set custom storage
     },
     'get',() => {
-      //get custom storage
+      // get custom storage
     }
   )
   class Grid { // 1-based
@@ -302,6 +302,10 @@
         menuIconURI: getIcon(),
         blocks: [
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: 'Grid Management'
+          },
+          {
             func: 'newGrid',
             blockType: Scratch.BlockType.BUTTON,
             text: 'New Grid',
@@ -312,6 +316,22 @@
             blockType: Scratch.BlockType.BUTTON,
             text: 'Delete a Grid',
             hideFromPalette: Object.keys(grids).length === 0
+          },
+          {
+            opcode: 'gridExists',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'grid named [gridName] exists?',
+            arguments: {
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'my grid 1'
+              }
+            },
+            hideFromPalette: false
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: 'Data Management'
           },
           {
             opcode: 'addRows',
@@ -386,6 +406,36 @@
             hideFromPalette: false
           },
           {
+            opcode: 'deleteRow',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'delete row #[rowNum] from grid [gridName]',
+            arguments: {
+              rowNum: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            }
+          },
+          {
+            opcode: 'deleteColumn',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'delete column #[columnNum] from grid [gridName]',
+            arguments: {
+              columnNum: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            }
+          },
+          {
             opcode: 'setCellValue',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set value of cell at x: [x] y: [y] to [value] in grid [gridName]',
@@ -442,7 +492,8 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               }
-            }
+            },
+            hideFromPalette: false
           },
           {
             opcode: 'serialize',
@@ -457,13 +508,15 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'JSONtype'
               }
-            }
+            },
+            hideFromPalette: false
           },
           {
             opcode: 'getGrids',
             blockType: Scratch.BlockType.REPORTER,
             text: 'all grids',
-            disableMonitor: true
+            disableMonitor: true,
+            hideFromPalette: false
           }
         ],
         menus: {
@@ -517,6 +570,9 @@
         alert(`Grid ${JSON.stringify(toDelete)} not found`)
       }
     }
+    gridExists(args) {
+      return args.gridName in grids;
+    }
     addRows(args) {
       if (args.gridName in grids) {
         grids[args.gridName].addRows(args.count)
@@ -543,6 +599,20 @@
         grids[args.gridName].insertColumns(args.count,args.idx);
       } else {
         console.error('Data Grids: Grid not found');
+      }
+    }
+    deleteRow(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName].deleteRow(args.rowNum);
+      } else {
+        console.error('Data Grids: Grid not found')
+      }
+    }
+    deleteColumn(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName].deleteColumn(args.columnNum);
+      } else {
+        console.error('Data Grids: Grid not found')
       }
     }
     setCellValue(args) {
