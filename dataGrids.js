@@ -66,10 +66,71 @@
   })();
   const customStorage = new FunctionGroup(
     'set',(value) => {
-      // set custom storage
+      const data = value;
+      const stage = vm.runtime.targets.find(target => target.isStage);
+
+      if (!stage) {
+        console.error('Stage not found');
+        return;
+      }
+      let comment = null;
+      for (const id in stage.comments) {
+        const commentData = stage.comments[id];
+        if (commentData.text.startsWith(`CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
+`)) {
+          comment = commentData;
+          break;
+        }
+      }
+
+      if (!comment) {
+        console.log('Creating new comment');
+        comment = {
+          id: generateUUID(),
+          text: `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
+` + data,
+          blockID: null,
+          x: 100,
+          y: 100,
+          width: 200,
+          height: 100,
+          minimized: false
+        };
+        stage.comments[comment.id] = comment;
+      } else {
+        console.log('Updating comment text');
+        comment.text = `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
+` + data;
+      }
+      vm.runtime.emitProjectChanged();
     },
     'get',() => {
-      // get custom storage
+      const stage = vm.runtime.targets.find(target => target.isStage);
+
+      if (!stage) {
+        console.error('Stage not found');
+        return '';
+      }
+
+      if (Object.keys(stage.comments).length === 0) {
+        console.log('No comments found');
+        return '';
+      }
+
+      console.log('Searching for relevant comment');
+      for (const id in stage.comments) {
+        const comment = stage.comments[id];
+        if (comment.text.startsWith("CONFIGURATION FOR DATA GRIDS EXTENSION:")) {
+          const prefix = `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
+`;
+          const data = comment.text.slice(prefix.length).trim();
+          console.log('Found comment data');
+          return data;
+        }
+      }
+
+      console.log('No relevant comment found');
+      return '';
     }
   )
   class Grid { // 1-based
@@ -295,7 +356,7 @@
     }
   }
   let grids = {};
-  class ScratchDataGrids {
+  class DataGrids {
     getInfo() {
       return {
         id: 'epDataGrids',
@@ -422,7 +483,8 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               }
-            }
+            },
+            hideFromPalette: false
           },
           {
             opcode: 'deleteColumn',
@@ -437,7 +499,8 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               }
-            }
+            },
+            hideFromPalette: false
           },
           {
             opcode: 'setCellValue',
@@ -484,6 +547,38 @@
             hideFromPalette: false
           },
           {
+            opcode: 'getRow',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get row [rowNum] of grid [gridName] as array',
+            arguments: {
+              rowNum: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            hideFromPalette: false
+          },
+          {
+            opcode: 'getColumn',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get column [columnNum] of grid [gridName] as array',
+            arguments: {
+              columnNum: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            hideFromPalette: false
+          },
+          {
             opcode: 'getDimension',
             blockType: Scratch.BlockType.REPORTER,
             text: '[dimensionType] of grid [gridName]',
@@ -519,7 +614,7 @@
             opcode: 'getGrids',
             blockType: Scratch.BlockType.REPORTER,
             text: 'all grids',
-            disableMonitor: true,
+            disableMonitor: false,
             hideFromPalette: false
           }
         ],
@@ -655,5 +750,5 @@
     }
   }
 
-  Scratch.extensions.register(new ScratchDataGrids());
+  Scratch.extensions.register(new DataGrids());
 })(Scratch);
