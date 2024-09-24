@@ -363,6 +363,7 @@
         name: 'Data Grids',
         color1: '#ff280a',
         color2: '#b2220a',
+        color3: '#b2220a',
         menuIconURI: getMenuIcon(),
         blockIconURI: getBlockIcon(),
         blocks: [
@@ -727,6 +728,22 @@
       } else {
         console.error('Data Grids: Grid not found');
         return '';
+      }
+    }
+    getRow(args) {
+      if (args.gridName in grids) {
+        return JSON.stringify(grids[args.gridName].getRow(args.rowNum))
+      } else {
+        console.error('Data Grids: Grid not found');
+        return '[]';
+      }
+    }
+    getColumn(args) {
+      if (args.gridName in grids) {
+        return JSON.stringify(grids[args.gridName].getColumn(args.columnNum))
+      } else {
+        console.error('Data Grids: Grid not found');
+        return '[]';
       }
     }
     getDimension(args) {
