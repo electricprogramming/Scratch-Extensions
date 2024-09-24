@@ -3,7 +3,7 @@
   function getIcon() {
     return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+ICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIGZpbGw9IiNmZjI4MGEiLz4gICA8ZyBpZD0iYWxsLWVsZW1lbnRzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNCwtNCkgc2NhbGUoMS40LDEuNCkiPiAgICAgPGcgaWQ9ImdyaWQtc3F1YXJlcyIgZmlsbD0id2hpdGUiPiA8IS0tR3JpZCBTcXVhcmVzLS0+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICA8L2c+ICAgICA8ZyBpZD0iYnVsbGV0LXBvaW50cyIgZmlsbD0id2hpdGUiPiAgICAgICA8ZyBpZD0idG9wIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC44NSwwKSI+IDwhLS1Ub3AgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjM4IiBjeT0iMjAiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSI1NCIgY3k9IjIwIiByPSI0Ii8+ICAgICAgIDwvZz4gICAgICAgPGcgaWQ9ImxlZnQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTAuODUpIj4gPCEtLUxlZnQgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjIwIiBjeT0iMzgiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjU0IiByPSI0Ii8+ICAgICAgIDwvZz4gICAgIDwvZz4gICA8L2c+IDwvc3ZnPg=='
   }
-  const vm = Scratch.vm
+  const vm = Scratch.vm;
   function repeat(count = 0, action = () => {}) {  
       for (let i = 0; i < count; i++) {
         const escapeLoop = () => {
@@ -388,7 +388,7 @@
           {
             opcode: 'setCellValue',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set value of cell at x [x] y [y] to [value] in grid [gridName]',
+            text: 'set value of cell at x: [x] y: [y] to [value] in grid [gridName]',
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -408,6 +408,41 @@
               }
             },
             hideFromPalette: false
+          },
+          {
+            opcode: 'getCellValue',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get value of cell at x: [x] y: [y] in grid [gridName]',
+            arguments: {
+              x: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            hideFromPalette: false
+          },
+          {
+            opcode: 'getDimension',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[dimensionType] of grid [gridName]',
+            arguments: {
+              dimensionType: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'dimensionType'
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            }
           },
           {
             opcode: 'serialize',
@@ -438,7 +473,11 @@
           },
           JSONtype: {
             acceptReporters: false,
-            items: ['Array','Object']
+            items: ['array','object']
+          },
+          dimensionType: {
+            acceptReporters: false,
+            items: ['width','height']
           }
         }
       };
@@ -501,28 +540,44 @@
     }
     insertColumns(args) {
       if (args.gridName in grids) {
-        grids[args.gridName].insertColumns(args.count,args.idx)
+        grids[args.gridName].insertColumns(args.count,args.idx);
       } else {
-        console.error('Data Grids: Grid not found')
+        console.error('Data Grids: Grid not found');
       }
     }
     setCellValue(args) {
       if (args.gridName in grids) {
-        grids[args.gridName].set(args.x,args.y,args.value)
+        grids[args.gridName].set(args.x,args.y,args.value);
       } else {
-        console.error('Data Grids: Grid not found')
+        console.error('Data Grids: Grid not found');
+      }
+    }
+    getCellValue(args){
+      if (args.gridName in grids) {
+        return grids[args.gridName].get(args.x,args.y);
+      } else {
+        console.error('Data Grids: Grid not found');
+        return '';
+      }
+    }
+    getDimension(args) {
+      if (args.gridName in grids) {
+        return args.dimensionType === 'width' ? grids[args.gridName].getWidth() : grids[args.gridName].getHeight();
+      } else {
+        console.error('Data Grids: Grid not found');
+        return 0;
       }
     }
     serialize(args) {
-      if(args.gridName in grids) {
-        return args.valueType === 'Array' ? grids[args.gridName].serializeArray() : grids[args.gridName].serializeObject()
+      if (args.gridName in grids) {
+        return args.valueType === 'array' ? grids[args.gridName].serializeArray() : grids[args.gridName].serializeObject();
       } else {
-        console.error('Data Grids: Grid not found')
-        return args.valueType === 'Array' ? '[]' : '{}'
+        console.error('Data Grids: Grid not found');
+        return args.valueType === 'array' ? '[]' : '{}';
       }
     }
     getGrids() {
-      return JSON.stringify(Object.keys(grids))
+      return JSON.stringify(Object.keys(grids));
     }
   }
 
