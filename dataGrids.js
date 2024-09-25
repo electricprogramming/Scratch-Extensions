@@ -110,7 +110,6 @@
         comment.text = `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
 ` + data;
       }
-      vm.runtime.emitProjectChanged();
     },
     'get', () => {
       const stage = vm.runtime.targets.find(target => target.isStage);
@@ -371,6 +370,9 @@
     })
     customStorage.set(JSON.stringify(result))
   }
+  window.addEventListener('load', () => {
+      alert('Window has loaded!');
+  }, { once: true });
   class DataGrids {
     getInfo() {
       return {
@@ -646,7 +648,7 @@
             hideFromPalette: false
           },
           {
-            opcode: 'serialize',
+            opcode: 'scratchSerialize',
             blockType: Scratch.BlockType.REPORTER,
             text: 'grid [gridName] as [valueType]',
             arguments: {
@@ -817,7 +819,7 @@
         return 0;
       }
     }
-    serialize(args) {
+    scratchSerialize(args) {
       if (args.gridName in grids) {
         return args.valueType === 'array' ? grids[args.gridName].serialize() : grids[args.gridName].serializeObject();
       } else {
