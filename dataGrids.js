@@ -28,6 +28,16 @@
         }
       }
   }
+  function waitUntil(conditionFn = true, callback = () => {}) {
+    let elapsedTime = 0;
+    const interval = setInterval(() => {
+      elapsedTime += 100;
+      if (conditionFn()) {
+        clearInterval(interval);
+        callback(elapsedTime);
+      }
+    }, 100); // Check every 100ms
+  }
   function toInteger(value) {
       if (Number.isInteger(value)) {
         return value;
@@ -116,7 +126,7 @@
 
       if (!stage) {
         console.error('Stage not found');
-        return '';
+        return null;
       }
 
       if (Object.keys(stage.comments).length === 0) {
@@ -370,9 +380,12 @@
     })
     customStorage.set(JSON.stringify(result))
   }
-  window.addEventListener('load', () => {
-      alert('Window has loaded!');
-  }, { once: true });
+  waitUntil(
+    customStorage.get() !== null,
+    (elapsedTime) => {
+      alert(`elapsed time: ${elapsedTime} | stored data: ${customStorage.get()}`)
+    }
+  )
   class DataGrids {
     getInfo() {
       return {
