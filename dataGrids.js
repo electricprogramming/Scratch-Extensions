@@ -65,7 +65,15 @@
     return FunctionGroup;
   })();
   const customStorage = new FunctionGroup(
-    'set',(value) => {
+    'set', (value) => {
+      function generateUUID() {
+        // UUID version 4
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+          const thisLetter = v.toString(16);
+          return thisLetter;
+        });
+      }
       const data = value;
       const stage = vm.runtime.targets.find(target => target.isStage);
 
@@ -104,7 +112,7 @@
       }
       vm.runtime.emitProjectChanged();
     },
-    'get',() => {
+    'get', () => {
       const stage = vm.runtime.targets.find(target => target.isStage);
 
       if (!stage) {
@@ -308,7 +316,7 @@
         action(idx + 1, currentColumn);
       });
     }
-    serializeArray() {
+    serialize() {
       return JSON.stringify(this.#gridItems);
     }
     serializeObject() {
@@ -356,6 +364,13 @@
     }
   }
   let grids = {};
+  function updateProjectStorage() {
+    let result = {};
+    Object.keys(grids).forEach(key => {
+      result[key] = grids[key].serialize();
+    })
+    customStorage.set(JSON.stringify(result))
+  }
   class DataGrids {
     getInfo() {
       return {
@@ -548,6 +563,41 @@
             hideFromPalette: false
           },
           {
+            opcode: 'indexesOf',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'all indexes of [value] in grid [gridName]',
+            arguments: {
+              value: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'value'
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            hideFromPalette: false
+          },
+          {
+            opcode: 'replaceAll',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'replace all [oldValue] with [newValue] in grid [gridName]',
+            arguments: {
+              oldValue: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'value'
+              },
+              newValue: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Hello, World!'
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            }
+          },
+          {
             opcode: 'getRow',
             blockType: Scratch.BlockType.REPORTER,
             text: 'get row [rowNum] of grid [gridName] as array',
@@ -658,6 +708,7 @@
         grids[gridName] = Grid.new(0,0);
       }
       vm.extensionManager.refreshBlocks();
+      updateProjectStorage();
     }
     deleteGrid() {
       const toDelete = prompt('What is the grid that should be deleted called?');
@@ -730,6 +781,18 @@
         return '';
       }
     }
+    indexesOf(args) {
+      if (args.gridName in grids) {
+        return JSON.stringify(grids[args.gridName].findAll(args.value))
+      }
+    }
+    replaceAll(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName].replaceAll(args.oldValue,args.newValue)
+      } else {
+        console.error('Data Grids: Grid not found')
+      }
+    }
     getRow(args) {
       if (args.gridName in grids) {
         return JSON.stringify(grids[args.gridName].getRow(args.rowNum))
@@ -756,13 +819,14 @@
     }
     serialize(args) {
       if (args.gridName in grids) {
-        return args.valueType === 'array' ? grids[args.gridName].serializeArray() : grids[args.gridName].serializeObject();
+        return args.valueType === 'array' ? grids[args.gridName].serialize() : grids[args.gridName].serializeObject();
       } else {
         console.error('Data Grids: Grid not found');
         return args.valueType === 'array' ? '[]' : '{}';
       }
     }
     getGrids() {
+      alert(JSON.stringify(grids))
       return JSON.stringify(Object.keys(grids));
     }
   }
