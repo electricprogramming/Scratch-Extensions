@@ -29,10 +29,14 @@
       }
   }
   function waitUntil(conditionFn = true, callback = () => {}) {
+    if (conditionFn) {
+      callback(0);
+      return;
+    }
     let elapsedTime = 0;
     const interval = setInterval(() => {
       elapsedTime += 100;
-      if (conditionFn()) {
+      if (conditionFn) {
         clearInterval(interval);
         callback(elapsedTime);
       }
