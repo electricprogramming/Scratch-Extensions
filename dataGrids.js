@@ -28,7 +28,7 @@
         }
       }
   }
-  function waitUntil(conditionFn = true, callback = () => {}) {
+  async function waitUntil(conditionFn = true, callback = () => {}) {
     if (conditionFn) {
       callback(0);
       return;
