@@ -2,6 +2,7 @@
 // Original code available under the MIT license
 // this version has the same blocks, but connections are universal, not by sprite.
 // this helps with something like an online multiplayer game, where cloud clones need to be reading data from the same connection as the main player is sending data, or something like that.
+// the block color and extension id are also changed to be distinguishable.
 (function (Scratch) {
   "use strict";
 
