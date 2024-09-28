@@ -384,12 +384,6 @@
     })
     customStorage.set(JSON.stringify(result))
   }
-  waitUntil(
-    customStorage.get() !== null,
-    (elapsedTime) => {
-      alert(`elapsed time: ${elapsedTime} | stored data: ${customStorage.get()}`)
-    }
-  )
   class DataGrids {
     getInfo() {
       return {
@@ -401,10 +395,7 @@
         menuIconURI: getMenuIcon(),
         blockIconURI: getBlockIcon(),
         blocks: [
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: 'Grid Management'
-          },
+          {blockType: Scratch.BlockType.LABEL, text: 'Grid Management'},
           {
             func: 'newGrid',
             blockType: Scratch.BlockType.BUTTON,
@@ -429,10 +420,7 @@
             },
             hideFromPalette: false
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: 'Data Management'
-          },
+          { blockType: Scratch.BlockType.LABEL, text: 'Data Management'},
           {
             opcode: 'addRows',
             blockType: Scratch.BlockType.COMMAND,
@@ -697,12 +685,29 @@
             },
             hideFromPalette: false
           },
+          {blockType: Scratch.BlockType.LABEL, text: 'Iteration'},
           {
-            opcode: 'getGrids',
+            opcode: 'iterateItems',
+            blockType: Scratch.BlockType.LOOP,
+            text: 'for each'
+          },
+          {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
+          {blockType: Scratch.BlockType.LABEL,
+            text: 'This one is for grid-related custom'
+          },{blockType: Scratch.BlockType.LABEL,
+            text: 'blocks so you can use a menu instead'
+          },{blockType: Scratch.BlockType.LABEL,
+            text: 'of manually typing a name every time.'},
+          {
+            opcode: 'getGridName',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'all grids',
-            disableMonitor: false,
-            hideFromPalette: false
+            text: '   [gridName]',
+            arguments: {
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            }
           }
         ],
         menus: {
@@ -820,6 +825,9 @@
     indexesOf(args) {
       if (args.gridName in grids) {
         return JSON.stringify(grids[args.gridName].findAll(args.value))
+      } else {
+        console.error('Data Grids: Grid not found');
+        return []
       }
     }
     replaceAll(args) {
@@ -869,8 +877,15 @@
       }
     }
     getGrids() {
-      alert(JSON.stringify(grids))
       return JSON.stringify(Object.keys(grids));
+    }
+    getGridName(args) {
+      if (args.gridName in grids) {
+        return args.gridName;
+      } else {
+        console.error('Data Grids: Grid not found');
+        return '';
+      }
     }
   }
 
