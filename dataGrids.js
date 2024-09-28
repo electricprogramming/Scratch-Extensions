@@ -389,7 +389,7 @@
       return {
         id: 'epDataGrids',
         name: 'Data Grids',
-        color1: '#ff280a',
+        color1: '#ff0000',
         color2: '#b2220a',
         color3: '#b2220a',
         menuIconURI: getMenuIcon(),
@@ -703,7 +703,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'item',
             disableMonitor: true,
-            hideFromPalette: true
+            hideFromPalette: false
           },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
           {blockType: Scratch.BlockType.LABEL,
@@ -715,7 +715,7 @@
           {
             opcode: 'getGridName',
             blockType: Scratch.BlockType.REPORTER,
-            text: '   [gridName]',
+            text: 'util [gridName]',
             arguments: {
               gridName: {
                 type: Scratch.ArgumentType.STRING,
