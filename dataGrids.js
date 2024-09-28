@@ -393,7 +393,6 @@
         color2: '#b2220a',
         color3: '#b2220a',
         menuIconURI: getMenuIcon(),
-        blockIconURI: getBlockIcon(),
         blocks: [
           {blockType: Scratch.BlockType.LABEL, text: 'Grid Management'},
           {
@@ -689,7 +688,22 @@
           {
             opcode: 'iterateItems',
             blockType: Scratch.BlockType.LOOP,
-            text: 'for each'
+            text: 'for each [item] [x] [y] in grid [gridName]',
+            arguments: {
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              },
+              item: {}, x: {}, y: {}
+            },
+            hideFromPalette: true
+          },
+          {
+            opcode: 'iterationItem',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'item',
+            disableMonitor: true,
+            hideFromPalette: true
           },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
           {blockType: Scratch.BlockType.LABEL,
