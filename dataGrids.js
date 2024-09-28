@@ -377,12 +377,15 @@
     }
   }
   let grids = {};
-  function updateProjectStorage() {
+  function serializeState() {
     let result = {};
     Object.keys(grids).forEach(key => {
       result[key] = grids[key].serialize();
     })
-    customStorage.set(JSON.stringify(result))
+    return JSON.stringify(result)
+  }
+  function updateProjectStorage() {
+    customStorage.set(serializeState())
   }
   class DataGrids {
     getInfo() {
