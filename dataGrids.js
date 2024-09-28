@@ -699,7 +699,7 @@
               },
               item: {}, x: {}, y: {}
             },
-            hideFromPalette: true
+            hideFromPalette: false
           },
           {
             opcode: 'iterationItem',
@@ -707,6 +707,20 @@
             text: 'item',
             disableMonitor: true,
             hideFromPalette: false
+          },
+          {
+            opcode: 'iterationX',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'x',
+            disableMonitor: true,
+            hideFromPalette: false,
+          },
+          {
+            opcode: 'iterationY',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'y',
+            disableMonitor: true,
+            hideFromPalette: false,
           },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
           {blockType: Scratch.BlockType.LABEL,
