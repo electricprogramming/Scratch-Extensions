@@ -697,14 +697,26 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               },
-              item: {}, x: {}, y: {}
+              item: {
+                type: Scratch.ArgumentType.STRING,
+                fillIn: 'iterationItem'
+              },
+              x: {
+                type: Scratch.ArgumentType.STRING,
+                fillIn: 'iterationX'
+              },
+              y: {
+                type: Scratch.ArgumentType.STRING,
+                fillIn: 'iterationY'
+              }
             },
-            hideFromPalette: true
+            hideFromPalette: false
           },
           {
             opcode: 'iterationItem',
             blockType: Scratch.BlockType.REPORTER,
             text: 'item',
+            canDragDuplicate: true,
             disableMonitor: true,
             hideFromPalette: true
           },
@@ -712,6 +724,7 @@
             opcode: 'iterationX',
             blockType: Scratch.BlockType.REPORTER,
             text: 'x',
+            canDragDuplicate: true,
             disableMonitor: true,
             hideFromPalette: true
           },
@@ -719,6 +732,7 @@
             opcode: 'iterationY',
             blockType: Scratch.BlockType.REPORTER,
             text: 'y',
+            canDragDuplicate: true,
             disableMonitor: true,
             hideFromPalette: true
           },
@@ -768,22 +782,6 @@
             text: 'index',
             disableMonitor: true,
             hideFromPalette: true
-          },
-          {
-            blockType: Scratch.BlockType.XML,
-            xml: `
-              <block type="epDataGrids_iterateItems">
-                <value name="item"><shadow type="epDataGrids_iterationItem"></shadow></value>
-                <value name="x"><shadow type="epDataGrids_iterationX"></shadow></value>
-                <value name="y"><shadow type="epDataGrids_iterationY"></shadow></value>
-                <value name="gridName"><shadow type="text"><field name="gridName"/></shadow></value>
-              </block>
-              <sep gap="36"/>
-              <block type="epDataGrids_iterateRows">
-                <value name="row"><shadow type="epDataGrids_iterationRow"></shadow></value>
-                <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
-                <value name="gridName"><shadow type="dropdown"/></value>
-            `
           },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
           {blockType: Scratch.BlockType.LABEL,
