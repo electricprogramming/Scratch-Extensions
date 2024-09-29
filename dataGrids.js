@@ -751,7 +751,7 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               },
-              row: {}, idx: {}
+              column: {}, idx: {}
             },
             hideFromPalette: true
           },
