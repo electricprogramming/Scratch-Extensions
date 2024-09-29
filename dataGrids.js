@@ -715,6 +715,7 @@
           {
             opcode: 'iterationItem',
             blockType: Scratch.BlockType.REPORTER,
+            blockShape: Scratch.BlockShape.SQUARE,
             text: 'item',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -723,6 +724,7 @@
           {
             opcode: 'iterationX',
             blockType: Scratch.BlockType.REPORTER,
+            blockShape: Scratch.BlockShape.SQUARE,
             text: 'x',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -731,6 +733,7 @@
           {
             opcode: 'iterationY',
             blockType: Scratch.BlockType.REPORTER,
+            blockShape: Scratch.BlockShape.SQUARE,
             text: 'y',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -752,6 +755,7 @@
           {
             opcode: 'iterationRow',
             blockType: Scratch.BlockType.REPORTER,
+            blockShape: Scratch.BlockShape.SQUARE,
             text: 'row',
             disableMonitor: true,
             hideFromPalette: true
@@ -772,6 +776,7 @@
           {
             opcode: 'iterationColumn',
             blockType: Scratch.BlockType.REPORTER,
+            blockShape: Scratch.BlockShape.SQUARE,
             text: 'column',
             disableMonitor: true,
             hideFromPalette: true
@@ -779,6 +784,7 @@
           {
             opcode: 'iterationIdx',
             blockType: Scratch.BlockType.REPORTER,
+            blockShape: Scratch.BlockShape.SQUARE,
             text: 'index',
             disableMonitor: true,
             hideFromPalette: true
