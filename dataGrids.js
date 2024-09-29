@@ -422,6 +422,13 @@
             },
             hideFromPalette: false
           },
+          {
+            opcode: 'getGrids',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'all grids',
+            disableMonitor: true,
+            hideFromPalette: false
+          },
           { blockType: Scratch.BlockType.LABEL, text: 'Data Management'},
           {
             opcode: 'addRows',
@@ -748,15 +755,23 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               },
-              row: {}, idx: {}
+              row: {
+                type: Scratch.ArgumentType.STRING,
+                fillIn: 'iterationRow'
+              },
+              idx: {
+                type: Scratch.ArgumentType.STRING,
+                fillIn: 'iterationIdx'
+              }
             },
-            hideFromPalette: true
+            hideFromPalette: false
           },
           {
             opcode: 'iterationRow',
             blockType: Scratch.BlockType.REPORTER,
             blockShape: Scratch.BlockShape.SQUARE,
             text: 'row',
+            canDragDuplicate: true,
             disableMonitor: true,
             hideFromPalette: true
           },
@@ -769,15 +784,23 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               },
-              column: {}, idx: {}
+              column: {
+                type: Scratch.ArgumentType.STRING,
+                fillIn: 'iterationColumn'
+              },
+              idx: {
+                type: Scratch.ArgumentType.STRING,
+                fillIn: 'iterationIdx'
+              }
             },
-            hideFromPalette: true
+            hideFromPalette: false
           },
           {
             opcode: 'iterationColumn',
             blockType: Scratch.BlockType.REPORTER,
             blockShape: Scratch.BlockShape.SQUARE,
             text: 'column',
+            canDragDuplicate: true,
             disableMonitor: true,
             hideFromPalette: true
           },
@@ -786,6 +809,7 @@
             blockType: Scratch.BlockType.REPORTER,
             blockShape: Scratch.BlockShape.SQUARE,
             text: 'index',
+            canDragDuplicate: true,
             disableMonitor: true,
             hideFromPalette: true
           },
