@@ -722,6 +722,11 @@
             disableMonitor: true,
             hideFromPalette: false,
           },
+          {
+            opcode: 'iterateRow',
+            blockType: Scratch.BlockType.LOOP,
+            text: 'for each [row] [idx]'
+          },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
           {blockType: Scratch.BlockType.LABEL,
             text: 'This one is for grid-related custom'
