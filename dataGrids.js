@@ -387,7 +387,7 @@
   function updateProjectStorage() {
     customStorage.set(serializeState())
   }
-  class DataGrids {
+  class epDataGrids {
     getInfo() {
       return {
         id: 'epDataGrids',
@@ -699,33 +699,91 @@
               },
               item: {}, x: {}, y: {}
             },
-            hideFromPalette: false
+            hideFromPalette: true
           },
           {
             opcode: 'iterationItem',
             blockType: Scratch.BlockType.REPORTER,
             text: 'item',
             disableMonitor: true,
-            hideFromPalette: false
+            hideFromPalette: true
           },
           {
             opcode: 'iterationX',
             blockType: Scratch.BlockType.REPORTER,
             text: 'x',
             disableMonitor: true,
-            hideFromPalette: false,
+            hideFromPalette: true
           },
           {
             opcode: 'iterationY',
             blockType: Scratch.BlockType.REPORTER,
             text: 'y',
             disableMonitor: true,
-            hideFromPalette: false,
+            hideFromPalette: true
           },
           {
-            opcode: 'iterateRow',
+            opcode: 'iterateRows',
             blockType: Scratch.BlockType.LOOP,
-            text: 'for each [row] [idx]'
+            text: 'for each [row] [idx] in grid [gridName]',
+            arguments: {
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              },
+              row: {}, idx: {}
+            },
+            hideFromPalette: true
+          },
+          {
+            opcode: 'iterationRow',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'row',
+            disableMonitor: true,
+            hideFromPalette: true
+          },
+          {
+            opcode: 'iterateColumns',
+            blockType: Scratch.BlockType.LOOP,
+            text: 'for each [column] [idx] in grid [gridName]',
+            arguments: {
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              },
+              row: {}, idx: {}
+            },
+            hideFromPalette: true
+          },
+          {
+            opcode: 'iterationColumn',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'column',
+            disableMonitor: true,
+            hideFromPalette: true
+          },
+          {
+            opcode: 'iterationIdx',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'index',
+            disableMonitor: true,
+            hideFromPalette: true
+          },
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: `
+              <block type="epDataGrids_iterateItems">
+                <value name="item"><shadow type="epDataGrids_iterationItem"></shadow></value>
+                <value name="x"><shadow type="epDataGrids_iterationX"></shadow></value>
+                <value name="y"><shadow type="epDataGrids_iterationY"></shadow></value>
+                <value name="gridName"><shadow type="text"><field name="gridName"/></shadow></value>
+              </block>
+              <sep gap="36"/>
+              <block type="epDataGrids_iterateRows">
+                <value name="row"><shadow type="epDataGrids_iterationRow"></shadow></value>
+                <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
+                <value name="gridName"><shadow type="dropdown"/></value>
+            `
           },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
           {blockType: Scratch.BlockType.LABEL,
@@ -925,5 +983,5 @@
     }
   }
 
-  Scratch.extensions.register(new DataGrids());
+  Scratch.extensions.register(new epDataGrids());
 })(Scratch);
