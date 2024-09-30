@@ -389,8 +389,23 @@
     return JSON.stringify(result)
   }
   function updateProjectStorage() {
-    customStorage.set(serializeState())
+    customStorage.set(serializeState());
   }
+  vm.runtime.on('PROJECT_LOADED', () => {
+    alert('Data Grids: Loading serialized project data')
+    let data;
+    try {
+      data = JSON.parse(customStorage.get());
+    } catch (e) {
+      console.error('Data Grids: Data Loading Error --',e.message)
+      data = {};
+    }
+    grids = {};
+    Object.keys(data).forEach(key => {
+      grids[key] = Grid.deserialize(data[key])
+    })
+    vm.extensionManager.refreshBlocks();
+  })
   class epDataGrids {
     getInfo() {
       return {
@@ -882,11 +897,12 @@
       if (toDelete in grids) {
         if (confirm(`Are you sure you want to delete grid ${JSON.stringify(toDelete)}`)) {
           delete grids[toDelete];
-          vm.extensionManager.refreshBlocks();
         }
       } else {
         alert(`Grid ${JSON.stringify(toDelete)} not found`)
       }
+      vm.extensionManager.refreshBlocks();
+      updateProjectStorage();
     }
     gridExists(args) {
       return args.gridName in grids;
@@ -897,6 +913,7 @@
       } else {
         console.error('Data Grids: Grid not found')
       }
+      updateProjectStorage();
     }
     addColumns(args) {
       if (args.gridName in grids) {
@@ -904,6 +921,7 @@
       } else {
         console.error('Data Grids: Grid not found')
       }
+      updateProjectStorage();
     }
     insertRows(args) {
       if (args.gridName in grids) {
@@ -911,6 +929,7 @@
       } else {
         console.error('Data Grids: Grid not found')
       }
+      updateProjectStorage();
     }
     insertColumns(args) {
       if (args.gridName in grids) {
@@ -918,6 +937,7 @@
       } else {
         console.error('Data Grids: Grid not found');
       }
+      updateProjectStorage();
     }
     deleteRow(args) {
       if (args.gridName in grids) {
@@ -925,6 +945,7 @@
       } else {
         console.error('Data Grids: Grid not found')
       }
+      updateProjectStorage();
     }
     deleteColumn(args) {
       if (args.gridName in grids) {
@@ -932,6 +953,7 @@
       } else {
         console.error('Data Grids: Grid not found')
       }
+      updateProjectStorage();
     }
     setCellValue(args) {
       if (args.gridName in grids) {
@@ -939,6 +961,7 @@
       } else {
         console.error('Data Grids: Grid not found');
       }
+      updateProjectStorage();
     }
     getCellValue(args){
       if (args.gridName in grids) {
@@ -953,7 +976,7 @@
         return JSON.stringify(grids[args.gridName].findAll(args.value))
       } else {
         console.error('Data Grids: Grid not found');
-        return []
+        return '[]';
       }
     }
     replaceAll(args) {
@@ -962,13 +985,14 @@
       } else {
         console.error('Data Grids: Grid not found')
       }
+      updateProjectStorage();
     }
     fillGrid(args) {
       if (args.gridName in grids) {
         grids[args.gridName].fill(args.value)
       } else {
         console.error('Data Grids: Grid not found')
-      }
+      }updateProjectStorage();
     }
     getRow(args) {
       if (args.gridName in grids) {
