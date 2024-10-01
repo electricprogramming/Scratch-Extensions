@@ -392,7 +392,7 @@
     customStorage.set(serializeState());
   }
   vm.runtime.on('PROJECT_LOADED', () => {
-    alert('Data Grids: Loading serialized project data')
+    console.log('Data Grids: Loading serialized project data')
     let data;
     try {
       data = JSON.parse(customStorage.get());
