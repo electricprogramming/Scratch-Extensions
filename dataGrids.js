@@ -1,12 +1,12 @@
 (function (Scratch) {
   "use strict";
-  const vm = Scratch.vm;
-  function getMenuIcon() {
-    return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+ICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIGZpbGw9IiNmZjI4MGEiLz4gICA8ZyBpZD0iYWxsLWVsZW1lbnRzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNCwtNCkgc2NhbGUoMS40LDEuNCkiPiAgICAgPGcgaWQ9ImdyaWQtc3F1YXJlcyIgZmlsbD0id2hpdGUiPiA8IS0tR3JpZCBTcXVhcmVzLS0+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICA8L2c+ICAgICA8ZyBpZD0iYnVsbGV0LXBvaW50cyIgZmlsbD0id2hpdGUiPiAgICAgICA8ZyBpZD0idG9wIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC44NSwwKSI+IDwhLS1Ub3AgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjM4IiBjeT0iMjAiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSI1NCIgY3k9IjIwIiByPSI0Ii8+ICAgICAgIDwvZz4gICAgICAgPGcgaWQ9ImxlZnQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTAuODUpIj4gPCEtLUxlZnQgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjIwIiBjeT0iMzgiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjU0IiByPSI0Ii8+ICAgICAgIDwvZz4gICAgIDwvZz4gICA8L2c+IDwvc3ZnPg=='
-  }
   if (!Scratch.extensions.unsandboxed) {
     alert(`Data Grids Extension must be ran unsandboxed.`);
     throw new Error(`Data Grids Extension must be ran unsandboxed.`);
+  }
+  const vm = Scratch.vm;
+  function getMenuIcon() {
+    return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+ICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIGZpbGw9IiNmZjI4MGEiLz4gICA8ZyBpZD0iYWxsLWVsZW1lbnRzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNCwtNCkgc2NhbGUoMS40LDEuNCkiPiAgICAgPGcgaWQ9ImdyaWQtc3F1YXJlcyIgZmlsbD0id2hpdGUiPiA8IS0tR3JpZCBTcXVhcmVzLS0+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICA8L2c+ICAgICA8ZyBpZD0iYnVsbGV0LXBvaW50cyIgZmlsbD0id2hpdGUiPiAgICAgICA8ZyBpZD0idG9wIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC44NSwwKSI+IDwhLS1Ub3AgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjM4IiBjeT0iMjAiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSI1NCIgY3k9IjIwIiByPSI0Ii8+ICAgICAgIDwvZz4gICAgICAgPGcgaWQ9ImxlZnQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTAuODUpIj4gPCEtLUxlZnQgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjIwIiBjeT0iMzgiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjU0IiByPSI0Ii8+ICAgICAgIDwvZz4gICAgIDwvZz4gICA8L2c+IDwvc3ZnPg=='
   }
   function getBlockIcon() {
     return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+ICAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2IyMjIwYSIgLz4gICAgIDxnIGlkPSJhbGwtZWxlbWVudHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00LC00KSBzY2FsZSgxLjQsMS40KSIgZmlsbD0iI2ZmZmZmZiI+ICAgICAgICAgPGcgaWQ9ImdyaWQtc3F1YXJlcyI+ICAgICAgICAgICAgIDwhLS0gR3JpZCBTcXVhcmVzIC0tPiAgICAgICAgICAgICA8cmVjdCB4PSIzMiIgeT0iMzIiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgLz4gICAgICAgICAgICAgPHJlY3QgeD0iNDgiIHk9IjMyIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIC8+ICAgICAgICAgICAgIDxyZWN0IHg9IjMyIiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiAvPiAgICAgICAgICAgICA8cmVjdCB4PSI0OCIgeT0iNDgiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgLz4gICAgICAgICA8L2c+ICAgICAgICAgPGcgaWQ9ImJ1bGxldC1wb2ludHMiPiAgICAgICAgICAgICA8ZyBpZD0idG9wIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC44NSwwKSI+ICAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzOCIgY3k9IjIwIiByPSI0IiAvPiAgICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iNTQiIGN5PSIyMCIgcj0iNCIgLz4gICAgICAgICAgICAgPC9nPiAgICAgICAgICAgICA8ZyBpZD0ibGVmdCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwtMC44NSkiPiAgICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMjAiIGN5PSIzOCIgcj0iNCIgLz4gICAgICAgICAgICAgICAgIDxjaXJjbGUgY3g9IjIwIiBjeT0iNTQiIHI9IjQiIC8+ICAgICAgICAgICAgIDwvZz4gICAgICAgICA8L2c+ICAgICA8L2c+IDwvc3ZnPg=='
@@ -32,6 +32,15 @@
         }
       }
   }
+  const regenReporters = ['epDataGrids_iterationItem', 'epDataGrids_iterationX', 'epDataGrids_iterationY', 'epDataGrids_iterationRow', 'epDataGrids_iterationColumn', 'epDataGrids_iterationIdx'];
+  if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
+    const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
+    SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
+      const result = originalCheck(block);
+      if (result) return true;
+      return block.isShadow() && regenReporters.includes(block.type);
+    };
+  });
   async function waitUntil(conditionFn = true, callback = () => {}) {
     if (conditionFn) {
       callback(0);
@@ -736,12 +745,12 @@
                 fillIn: 'iterationY'
               }
             },
-            hideFromPalette: false
+            hideFromPalette: true
           },
           {
             opcode: 'iterationItem',
             blockType: Scratch.BlockType.REPORTER,
-            blockShape: Scratch.BlockShape.SQUARE,
+            outputShape: 3,
             text: 'item',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -750,7 +759,7 @@
           {
             opcode: 'iterationX',
             blockType: Scratch.BlockType.REPORTER,
-            blockShape: Scratch.BlockShape.SQUARE,
+            outputShape: 3,
             text: 'x',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -759,7 +768,7 @@
           {
             opcode: 'iterationY',
             blockType: Scratch.BlockType.REPORTER,
-            blockShape: Scratch.BlockShape.SQUARE,
+            outputShape: 3,
             text: 'y',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -783,12 +792,12 @@
                 fillIn: 'iterationIdx'
               }
             },
-            hideFromPalette: false
+            hideFromPalette: true
           },
           {
             opcode: 'iterationRow',
             blockType: Scratch.BlockType.REPORTER,
-            blockShape: Scratch.BlockShape.SQUARE,
+            outputShape: 3,
             text: 'row',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -812,12 +821,12 @@
                 fillIn: 'iterationIdx'
               }
             },
-            hideFromPalette: false
+            hideFromPalette: true
           },
           {
             opcode: 'iterationColumn',
             blockType: Scratch.BlockType.REPORTER,
-            blockShape: Scratch.BlockShape.SQUARE,
+            outputShape: 3,
             text: 'column',
             canDragDuplicate: true,
             disableMonitor: true,
@@ -826,19 +835,39 @@
           {
             opcode: 'iterationIdx',
             blockType: Scratch.BlockType.REPORTER,
-            blockShape: Scratch.BlockShape.SQUARE,
+            outputShape: 3,
             text: 'index',
             canDragDuplicate: true,
             disableMonitor: true,
             hideFromPalette: true
           },
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: `
+              <block type="epDataGrids_iterateItems">
+                <value name="item"><shadow type="epDataGrids_iterationItem"></shadow></value>
+                <value name="x"><shadow type="epDataGrids_iterationX"></shadow></value>
+                <value name="y"><shadow type="epDataGrids_iterationY"></shadow></value>
+              </block>
+              <sep gap="36"/>
+              <block type="epDataGrids_iterateRows">
+                <value name="row"><shadow type="epDataGrids_iterationRow"></shadow></value>
+                <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
+              </block>
+              <sep gap="36"/>
+              <block type="epDataGrids_iterateColumns">
+                <value name="column"><shadow type="epDataGrids_iterationColumn"></shadow></value>
+                <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
+              </block>
+            `,
+          },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
-          {blockType: Scratch.BlockType.LABEL,
-            text: 'This one is for grid-related custom'
-          },{blockType: Scratch.BlockType.LABEL,
-            text: 'blocks so you can use a menu instead'
-          },{blockType: Scratch.BlockType.LABEL,
-            text: 'of manually typing a name every time.'},
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: `<label text="This one is for grid-related custom"/><sep gap="-12"/><sep gap="12"/>
+            <sep gap="-10"/><label text="blocks so you can use a menu instead"/><sep gap="-12"/><sep gap="12"/>
+            <sep gap="-10"/><label text="of manually typing a name every time."/><sep gap="-12"/><sep gap="12"/>`
+          },
           {
             opcode: 'getGridName',
             blockType: Scratch.BlockType.REPORTER,
