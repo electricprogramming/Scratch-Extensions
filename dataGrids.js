@@ -12,25 +12,25 @@
     return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+ICAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI2IyMjIwYSIgLz4gICAgIDxnIGlkPSJhbGwtZWxlbWVudHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00LC00KSBzY2FsZSgxLjQsMS40KSIgZmlsbD0iI2ZmZmZmZiI+ICAgICAgICAgPGcgaWQ9ImdyaWQtc3F1YXJlcyI+ICAgICAgICAgICAgIDwhLS0gR3JpZCBTcXVhcmVzIC0tPiAgICAgICAgICAgICA8cmVjdCB4PSIzMiIgeT0iMzIiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgLz4gICAgICAgICAgICAgPHJlY3QgeD0iNDgiIHk9IjMyIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIC8+ICAgICAgICAgICAgIDxyZWN0IHg9IjMyIiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiAvPiAgICAgICAgICAgICA8cmVjdCB4PSI0OCIgeT0iNDgiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgLz4gICAgICAgICA8L2c+ICAgICAgICAgPGcgaWQ9ImJ1bGxldC1wb2ludHMiPiAgICAgICAgICAgICA8ZyBpZD0idG9wIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC44NSwwKSI+ICAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSIzOCIgY3k9IjIwIiByPSI0IiAvPiAgICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iNTQiIGN5PSIyMCIgcj0iNCIgLz4gICAgICAgICAgICAgPC9nPiAgICAgICAgICAgICA8ZyBpZD0ibGVmdCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwtMC44NSkiPiAgICAgICAgICAgICAgICAgPGNpcmNsZSBjeD0iMjAiIGN5PSIzOCIgcj0iNCIgLz4gICAgICAgICAgICAgICAgIDxjaXJjbGUgY3g9IjIwIiBjeT0iNTQiIHI9IjQiIC8+ICAgICAgICAgICAgIDwvZz4gICAgICAgICA8L2c+ICAgICA8L2c+IDwvc3ZnPg=='
   }
   function repeat(count = 0, action = () => {}) {  
-      for (let i = 0; i < count; i++) {
-        const escapeLoop = () => {
-          throw new Error('EscapeLoop');
-        };
-        const continueLoop = () => {
-          throw new Error('ContinueLoop');
-        };
-        try {
-          action(i, escapeLoop, continueLoop);
-        } catch (e) {
-          if (e.message === 'EscapeLoop') {
-            break;
-          } else if (e.message === 'ContinueLoop') {
-            continue;
-          } else {
-            throw e;
-          }
+    for (let i = 0; i < count; i++) {
+      const escapeLoop = () => {
+        throw new Error('EscapeLoop');
+      };
+      const continueLoop = () => {
+        throw new Error('ContinueLoop');
+      };
+      try {
+        action(i, escapeLoop, continueLoop);
+      } catch (e) {
+        if (e.message === 'EscapeLoop') {
+          break;
+        } else if (e.message === 'ContinueLoop') {
+          continue;
+        } else {
+          throw e;
         }
       }
+    }
   }
   const regenReporters = ['epDataGrids_iterationItem', 'epDataGrids_iterationX', 'epDataGrids_iterationY', 'epDataGrids_iterationRow', 'epDataGrids_iterationColumn', 'epDataGrids_iterationIdx'];
   if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
@@ -41,9 +41,9 @@
       return block.isShadow() && regenReporters.includes(block.type);
     };
   });
-  const ogConverter = vm.runtime._convertBlockForScratchBlocks.bind(vm.runtime);
+  const originalConverter = vm.runtime._convertBlockForScratchBlocks.bind(vm.runtime);
   vm.runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
-    const res = ogConverter(blockInfo, categoryInfo);
+    const res = originalConverter(blockInfo, categoryInfo);
     if (blockInfo.outputShape) res.json.outputShape = blockInfo.outputShape;
     return res;
   }
@@ -395,7 +395,7 @@
       })
     }
   }
-  let grids = {"my grid": new Grid([])};
+  let grids = {};
   function serializeState() {
     let result = {};
     Object.keys(grids).forEach(key => {
@@ -850,25 +850,36 @@
             hideFromPalette: true
           },
           {
+            opcode: 'xmlMenu',
+            func: 'getGridName',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[gridName]',
+            arguments: {
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            disableMonitor: true,
+            hideFromPalette: true
+          },
+          {
             blockType: Scratch.BlockType.XML,
             xml: `
               <block type="epDataGrids_iterateItems">
                 <value name="item"><shadow type="epDataGrids_iterationItem"></shadow></value>
                 <value name="x"><shadow type="epDataGrids_iterationX"></shadow></value>
                 <value name="y"><shadow type="epDataGrids_iterationY"></shadow></value>
-                <field name="gridName"></field>
               </block>
               <sep gap="36"/>
               <block type="epDataGrids_iterateRows">
                 <value name="row"><shadow type="epDataGrids_iterationRow"></shadow></value>
                 <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
-                <field name="gridName"></field>
               </block>
               <sep gap="36"/>
               <block type="epDataGrids_iterateColumns">
                 <value name="column"><shadow type="epDataGrids_iterationColumn"></shadow></value>
                 <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
-                <field name="gridName"></field>
               </block>
             `,
           },
@@ -937,7 +948,7 @@
     deleteGrid() {
       const toDelete = prompt('What is the grid that should be deleted called?');
       if (toDelete in grids) {
-        if (confirm(`Are you sure you want to delete grid ${JSON.stringify(toDelete)}`)) {
+        if (confirm(`Are you sure you want to delete grid ${JSON.stringify(toDelete)}?`)) {
           delete grids[toDelete];
         }
       } else {
