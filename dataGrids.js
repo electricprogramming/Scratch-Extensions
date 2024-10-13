@@ -395,7 +395,7 @@
       })
     }
   }
-  let grids = {};
+  let grids = {"my grid": new Grid([])};
   function serializeState() {
     let result = {};
     Object.keys(grids).forEach(key => {
@@ -710,6 +710,7 @@
                 menu: 'gridMenu'
               }
             },
+            disableMonitor: true,
             hideFromPalette: false
           },
           {
@@ -726,6 +727,7 @@
                 menu: 'JSONtype'
               }
             },
+            disableMonitor: true,
             hideFromPalette: false
           },
           {blockType: Scratch.BlockType.LABEL, text: 'Iteration'},
@@ -734,10 +736,6 @@
             blockType: Scratch.BlockType.LOOP,
             text: 'for each [item] [x] [y] in grid [gridName]',
             arguments: {
-              gridName: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'gridMenu'
-              },
               item: {
                 type: Scratch.ArgumentType.STRING,
                 fillIn: 'iterationItem'
@@ -749,6 +747,10 @@
               y: {
                 type: Scratch.ArgumentType.STRING,
                 fillIn: 'iterationY'
+              },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
               }
             },
             hideFromPalette: true
@@ -854,17 +856,19 @@
                 <value name="item"><shadow type="epDataGrids_iterationItem"></shadow></value>
                 <value name="x"><shadow type="epDataGrids_iterationX"></shadow></value>
                 <value name="y"><shadow type="epDataGrids_iterationY"></shadow></value>
+                <field name="gridName"></field>
               </block>
               <sep gap="36"/>
               <block type="epDataGrids_iterateRows">
                 <value name="row"><shadow type="epDataGrids_iterationRow"></shadow></value>
                 <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
+                <field name="gridName"></field>
               </block>
               <sep gap="36"/>
               <block type="epDataGrids_iterateColumns">
                 <value name="column"><shadow type="epDataGrids_iterationColumn"></shadow></value>
                 <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
-                <value name="gridName"></value>
+                <field name="gridName"></field>
               </block>
             `,
           },
@@ -884,12 +888,14 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
               }
-            }
+            },
+            disableMonitor: true,
+            hideFromPalette: false
           }
         ],
         menus: {
           gridMenu: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: 'getGridMenu'
           },
           JSONtype: {
