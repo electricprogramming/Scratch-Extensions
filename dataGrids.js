@@ -41,6 +41,12 @@
       return block.isShadow() && regenReporters.includes(block.type);
     };
   });
+  const ogConverter = vm.runtime._convertBlockForScratchBlocks.bind(vm.runtime);
+  vm.runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
+    const res = ogConverter(blockInfo, categoryInfo);
+    if (blockInfo.outputShape) res.json.outputShape = blockInfo.outputShape;
+    return res;
+  }
   async function waitUntil(conditionFn = true, callback = () => {}) {
     if (conditionFn) {
       callback(0);
@@ -858,6 +864,7 @@
               <block type="epDataGrids_iterateColumns">
                 <value name="column"><shadow type="epDataGrids_iterationColumn"></shadow></value>
                 <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
+                <value name="gridName"></value>
               </block>
             `,
           },
