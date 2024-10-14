@@ -2,11 +2,10 @@
 // ID: booleanvariables
 // Description: Creates blocks dealing with boolean variables which store either true or false and can be accessed by typing their names.
 // By: ElectricProgramming <link>
-const bool_vars = new Map();
-let keys = [];
 (function (Scratch) {
   "use strict";
-
+  const bool_vars = new Map();
+  let keys = [];
   class BooleanVariables {
     getInfo() {
       return {
