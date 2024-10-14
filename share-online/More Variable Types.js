@@ -1,10 +1,9 @@
-const bool_vars = new Map();
-let response;
-let defaultNameBool = 'boolean variable 1'
-let idx;
 (function (Scratch) {
   "use strict";
-
+  const bool_vars = new Map();
+  let response;
+  let defaultNameBool = 'boolean variable 1'
+  let idx;
   class templateExtension {
     getInfo() {
       return {
