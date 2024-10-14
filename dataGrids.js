@@ -1090,6 +1090,31 @@
         return '';
       }
     }
+    iterateItems(args, util) {
+      if (args.gridName in grids) return false;
+      const grid = grids[args.gridName];
+      const itemCount = grid.getWidth() * grid.getHeight();
+      const flattenedArr = grid.getItems().flat(Infinity);
+      if (util.stackFrame.loopCounter === undefined) {
+        util.stackFrame.loopCounter = itemCount;
+      }
+      const index = Math.abs(util.stackFrame.loopCounter - itemCount);
+      
+      util.thread.epGridsIterationData = {
+        item: flattenedArr[index],
+        x: (itemCount % grid.getWidth()) + 1,
+        y: Math.floor(itemCount / grid.getWidth()) + 1
+      }
+      util.stackFrame.loopCounter--;
+      if (util.stackFrame.loopCounter >= 0) {
+        util.startBranch(1, true);
+      } else {
+        delete util.thread.epGridsIterationData;
+      }
+    }
+    iterationItem(args,util) {
+      
+    }
   }
 
   Scratch.extensions.register(new epDataGrids());
