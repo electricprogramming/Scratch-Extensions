@@ -5,7 +5,6 @@
 (function (Scratch) {
   "use strict";
   const bool_vars = new Map();
-  let keys = [];
   class BooleanVariables {
     getInfo() {
       return {
@@ -119,7 +118,7 @@
     delete_all_boolean_variables_set_to({ VALUE }) {
       bool_vars.forEach((value,key) => {
         if (value == VALUE) {
-        bool_vars.delete(key)
+          bool_vars.delete(key)
         }
       });
     }
@@ -141,9 +140,9 @@
     }
     
     get_all_bool_vars() {
-      keys.length = 0;
+      const keys = []
       for (const key of bool_vars.keys()) {
-      keys.push(key);
+        keys.push(key);
       }
       return(JSON.stringify(keys));
     }
