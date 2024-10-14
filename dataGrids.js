@@ -864,24 +864,33 @@
             hideFromPalette: true
           },
           {
+            // Iteration for Items
             blockType: Scratch.BlockType.XML,
             xml: `
               <block type="epDataGrids_iterateItems">
                 <value name="item"><shadow type="epDataGrids_iterationItem"></shadow></value>
                 <value name="x"><shadow type="epDataGrids_iterationX"></shadow></value>
                 <value name="y"><shadow type="epDataGrids_iterationY"></shadow></value>
-              </block>
-              <sep gap="36"/>
+              </block>`
+          },
+          {
+            // Iteration for Rows
+            blockType: Scratch.BlockType.XML,
+            xml: `
               <block type="epDataGrids_iterateRows">
                 <value name="row"><shadow type="epDataGrids_iterationRow"></shadow></value>
                 <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
-              </block>
-              <sep gap="36"/>
+              </block>`
+          },
+          {
+            // Iteration for Columns
+            blockType: Scratch.BlockType.XML,
+            xml: `
               <block type="epDataGrids_iterateColumns">
                 <value name="column"><shadow type="epDataGrids_iterationColumn"></shadow></value>
                 <value name="idx"><shadow type="epDataGrids_iterationIdx"></shadow></value>
               </block>
-            `,
+            `
           },
           {blockType: Scratch.BlockType.LABEL, text: 'Utilities'},
           {
