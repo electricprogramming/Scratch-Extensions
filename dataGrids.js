@@ -1091,7 +1091,10 @@
       }
     }
     iterateItems(args, util) {
-      if (args.gridName in grids) return false;
+      if (!(args.gridName in grids)) {
+        console.error('Data Grids: Grid not found');
+        return false;
+      }
       const grid = grids[args.gridName];
       const itemCount = grid.getWidth() * grid.getHeight();
       const flattenedArr = grid.getItems().flat(Infinity);
@@ -1102,8 +1105,8 @@
       
       util.thread.epGridsIterationData = {
         item: flattenedArr[index],
-        x: (itemCount % grid.getWidth()) + 1,
-        y: Math.floor(itemCount / grid.getWidth()) + 1
+        x: (index % grid.getWidth()) + 1,
+        y: Math.floor(index / grid.getWidth()) + 1
       }
       util.stackFrame.loopCounter--;
       if (util.stackFrame.loopCounter >= 0) {
@@ -1113,7 +1116,68 @@
       }
     }
     iterationItem(args,util) {
+      return util.thread.epGridsIterationData?.item || ''
+    }
+    iterationX(args, util) {
+      return util.thread.epGridsIterationData?.x || ''
+    }
+    iterationY(args, util) {
+      return util.thread.epGridsIterationData?.y || ''
+    }
+    iterateRows(args, util) {
+      if (!(args.gridName in grids)) {
+        console.error('Data Grids: Grid not found');
+        return false;
+      }
+      const grid = grids[args.gridName];
+      const rowCount = grid.getHeight();
+      if (util.stackFrame.loopCounter === undefined) {
+        util.stackFrame.loopCounter = rowCount;
+      }
+      const index = Math.abs(util.stackFrame.loopCounter - rowCount) + 1;
       
+      util.thread.epGridsIterationData = {
+        row: JSON.stringify(grid.getRow(index)),
+        idx: index
+      }
+      util.stackFrame.loopCounter--;
+      if (util.stackFrame.loopCounter >= 0) {
+        util.startBranch(1, true);
+      } else {
+        delete util.thread.epGridsIterationData;
+      }
+    }
+    iterationRow(args, util) {
+      return util.thread.epGridsIterationData?.row || ''
+    }
+    iterateColumns(args, util) {
+      if (!(args.gridName in grids)) {
+        console.error('Data Grids: Grid not found');
+        return false;
+      }
+      const grid = grids[args.gridName];
+      const columnCount = grid.getWidth();
+      if (util.stackFrame.loopCounter === undefined) {
+        util.stackFrame.loopCounter = columnCount;
+      }
+      const index = Math.abs(util.stackFrame.loopCounter - columnCount) + 1;
+      
+      util.thread.epGridsIterationData = {
+        column: JSON.stringify(grid.getColumn(index)),
+        idx: index
+      }
+      util.stackFrame.loopCounter--;
+      if (util.stackFrame.loopCounter >= 0) {
+        util.startBranch(1, true);
+      } else {
+        delete util.thread.epGridsIterationData;
+      }
+    }
+    iterationColumn(args, util) {
+      return util.thread.epGridsIterationData?.column || ''
+    }
+    iterationIdx(args, util) {
+      return util.thread.epGridsIterationData?.idx || ''
     }
   }
 
