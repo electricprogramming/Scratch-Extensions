@@ -77,28 +77,8 @@
       }
       return 0;
   }
-  const FunctionGroup = (() => {
-    class FunctionGroup {
-      constructor(...functions) {
-        for (let i = 0; i < functions.length; i += 2) {
-          const name = functions[i];
-          const func = functions[i + 1];
-          if (typeof name !== 'string' || typeof func !== 'function') {
-            throw new TypeError(`Expected a string name and a function for pair at index ${i}.`);
-          }
-          this[name] = func.bind(this);
-        }
-        Object.seal(this); // Seal the instance
-      }
-    }
-    
-    // Seal the prototype to prevent adding properties
-    Object.seal(FunctionGroup.prototype);
-    
-    return FunctionGroup;
-  })();
-  const customStorage = new FunctionGroup(
-    'set', (value) => {
+  const customStorage = {
+    set: (value) => {
       function generateUUID() {
         // UUID version 4
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -144,7 +124,7 @@
 ` + data;
       }
     },
-    'get', () => {
+    get: () => {
       const stage = vm.runtime.targets.find(target => target.isStage);
 
       if (!stage) {
@@ -172,7 +152,7 @@
       console.log('No relevant comment found');
       return '';
     }
-  )
+  }
   class Grid { // 1-based
     #gridWidth;
     #gridHeight;
