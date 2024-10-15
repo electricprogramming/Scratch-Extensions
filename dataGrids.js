@@ -4,6 +4,7 @@
     alert(`Data Grids Extension must be ran unsandboxed.`);
     throw new Error(`Data Grids Extension must be ran unsandboxed.`);
   }
+  let [isTW,isPM] = [!Scratch.extensions.isPenguinMod,Scratch.extensions.isPenguinMod];
   const vm = Scratch.vm;
   function getMenuIcon() {
     return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+ICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIGZpbGw9IiNmZjI4MGEiLz4gICA8ZyBpZD0iYWxsLWVsZW1lbnRzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNCwtNCkgc2NhbGUoMS40LDEuNCkiPiAgICAgPGcgaWQ9ImdyaWQtc3F1YXJlcyIgZmlsbD0id2hpdGUiPiA8IS0tR3JpZCBTcXVhcmVzLS0+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSIzMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjMyIiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICAgIDxyZWN0IHg9IjQ4IiB5PSI0OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIi8+ICAgICA8L2c+ICAgICA8ZyBpZD0iYnVsbGV0LXBvaW50cyIgZmlsbD0id2hpdGUiPiAgICAgICA8ZyBpZD0idG9wIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC44NSwwKSI+IDwhLS1Ub3AgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjM4IiBjeT0iMjAiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSI1NCIgY3k9IjIwIiByPSI0Ii8+ICAgICAgIDwvZz4gICAgICAgPGcgaWQ9ImxlZnQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTAuODUpIj4gPCEtLUxlZnQgQnVsbGV0IFBvaW50cy0tPiAgICAgICAgIDxjaXJjbGUgY3g9IjIwIiBjeT0iMzgiIHI9IjQiLz4gICAgICAgICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjU0IiByPSI0Ii8+ICAgICAgIDwvZz4gICAgIDwvZz4gICA8L2c+IDwvc3ZnPg=='
@@ -32,126 +33,21 @@
       }
     }
   }
-  const regenReporters = ['epDataGrids_iterationItem', 'epDataGrids_iterationX', 'epDataGrids_iterationY', 'epDataGrids_iterationRow', 'epDataGrids_iterationColumn', 'epDataGrids_iterationIdx'];
-  if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
-    const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
-    SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
-      const result = originalCheck(block);
-      if (result) return true;
-      return block.isShadow() && regenReporters.includes(block.type);
-    };
-  });
-  const originalConverter = vm.runtime._convertBlockForScratchBlocks.bind(vm.runtime);
-  vm.runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
-    const res = originalConverter(blockInfo, categoryInfo);
-    if (blockInfo.outputShape) res.json.outputShape = blockInfo.outputShape;
-    return res;
-  }
-  async function waitUntil(conditionFn = true, callback = () => {}) {
-    if (conditionFn) {
-      callback(0);
-      return;
-    }
-    let elapsedTime = 0;
-    const interval = setInterval(() => {
-      elapsedTime += 100;
-      if (conditionFn) {
-        clearInterval(interval);
-        callback(elapsedTime);
-      }
-    }, 100); // Check every 100ms
-  }
   function toInteger(value) {
-      if (Number.isInteger(value)) {
-        return value;
-      }
-      if (typeof value === 'number') {
-        return Math.round(value);
-      }
-      if (typeof value === 'string') {
-        const match = value.trim().match(/^[-+]?\d*\.?\d+$/);
-        if (match) {
-          return Math.round(parseFloat(match[0]));
-        }
-        return 0;
+    if (Number.isInteger(value)) {
+      return value;
+    }
+    if (typeof value === 'number') {
+      return Math.round(value);
+    }
+    if (typeof value === 'string') {
+      const match = value.trim().match(/^[-+]?\d*\.?\d+$/);
+      if (match) {
+        return Math.round(parseFloat(match[0]));
       }
       return 0;
-  }
-  const customStorage = {
-    set: (value) => {
-      function generateUUID() {
-        // UUID version 4
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-          const thisLetter = v.toString(16);
-          return thisLetter;
-        });
-      }
-      const data = value;
-      const stage = vm.runtime.targets.find(target => target.isStage);
-
-      if (!stage) {
-        console.error('Stage not found');
-        return;
-      }
-      let comment = null;
-      for (const id in stage.comments) {
-        const commentData = stage.comments[id];
-        if (commentData.text.startsWith(`CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-`)) {
-          comment = commentData;
-          break;
-        }
-      }
-
-      if (!comment) {
-        console.log('Creating new comment');
-        comment = {
-          id: generateUUID(),
-          text: `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-` + data,
-          blockID: null,
-          x: 100,
-          y: 100,
-          width: 200,
-          height: 100,
-          minimized: false
-        };
-        stage.comments[comment.id] = comment;
-      } else {
-        console.log('Updating comment text');
-        comment.text = `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-` + data;
-      }
-    },
-    get: () => {
-      const stage = vm.runtime.targets.find(target => target.isStage);
-
-      if (!stage) {
-        console.error('Stage not found');
-        return null;
-      }
-
-      if (Object.keys(stage.comments).length === 0) {
-        console.log('No comments found');
-        return '';
-      }
-
-      console.log('Searching for relevant comment');
-      for (const id in stage.comments) {
-        const comment = stage.comments[id];
-        if (comment.text.startsWith("CONFIGURATION FOR DATA GRIDS EXTENSION:")) {
-          const prefix = `CONFIGURATION FOR DATA GRIDS EXTENSION: YOU CAN MOVE, RESIZE, AND MINIMIZE THIS COMMENT, BUT DO NOT DELETE IT OR IT WILL BREAK THE EXTENSION'S SAVED DATA, WHICH MAY BE CRITICAL TO THE PROJECT. EDITING IT OR CREATING ANOTHER COMMENT TOO SIMILAR TO IT MAY ALSO BREAK THE SAVED DATA.
-`;
-          const data = comment.text.slice(prefix.length).trim();
-          console.log('Found comment data');
-          return data;
-        }
-      }
-
-      console.log('No relevant comment found');
-      return '';
     }
+    return 0;
   }
   class Grid { // 1-based
     #gridWidth;
@@ -375,31 +271,51 @@
       })
     }
   }
+  const regenReporters = ['epDataGrids_iterationItem', 'epDataGrids_iterationX', 'epDataGrids_iterationY', 'epDataGrids_iterationRow', 'epDataGrids_iterationColumn', 'epDataGrids_iterationIdx'];
+  if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
+    const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
+    SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
+      const result = originalCheck(block);
+      if (result) return true;
+      return block.isShadow() && regenReporters.includes(block.type);
+    };
+  });
+  const originalConverter = vm.runtime._convertBlockForScratchBlocks.bind(vm.runtime);
+  vm.runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
+    const res = originalConverter(blockInfo, categoryInfo);
+    if (blockInfo.outputShape) res.json.outputShape = blockInfo.outputShape;
+    return res;
+  }
   let grids = {};
+  const customStorage = {
+    set: (data) => {
+      if (isTW) vm.runtime.extensionStorage.epDataGrids = {data};
+    },
+    get: () => {
+      if (isTW) return vm.runtime.extensionStorage.epDataGrids?.data; else return;
+    }
+  }
   function serializeState() {
     let result = {};
     Object.keys(grids).forEach(key => {
       result[key] = grids[key].serialize();
     })
-    return JSON.stringify(result)
+    return result
   }
   function updateProjectStorage() {
     customStorage.set(serializeState());
   }
-  vm.runtime.on('PROJECT_LOADED', () => {
+  function deserializeState(state) {
     console.log('Data Grids: Loading serialized project data')
-    let data;
-    try {
-      data = JSON.parse(customStorage.get());
-    } catch (e) {
-      console.error('Data Grids: Data Loading Error --',e.message)
-      data = {};
-    }
     grids = {};
-    Object.keys(data).forEach(key => {
+    Object.keys(state).forEach(key => {
       grids[key] = Grid.deserialize(data[key])
     })
     vm.extensionManager.refreshBlocks();
+  }
+  if (isTW) vm.runtime.on('PROJECT_LOADED', () => {
+    data = customStorage.get();
+    deserializeState(data)
   })
   class epDataGrids {
     getInfo() {
@@ -1034,7 +950,8 @@
         grids[args.gridName].fill(args.value)
       } else {
         console.error('Data Grids: Grid not found')
-      }updateProjectStorage();
+      }
+      updateProjectStorage();
     }
     getRow(args) {
       if (args.gridName in grids) {
@@ -1105,13 +1022,13 @@
       }
     }
     iterationItem(args,util) {
-      return util.thread.epGridsIterationData?.item || ''
+      return util.thread.epGridsIterationData?.item || '';
     }
     iterationX(args, util) {
-      return util.thread.epGridsIterationData?.x || ''
+      return util.thread.epGridsIterationData?.x || '';
     }
     iterationY(args, util) {
-      return util.thread.epGridsIterationData?.y || ''
+      return util.thread.epGridsIterationData?.y || '';
     }
     iterateRows(args, util) {
       if (!(args.gridName in grids)) {
@@ -1137,7 +1054,7 @@
       }
     }
     iterationRow(args, util) {
-      return util.thread.epGridsIterationData?.row || ''
+      return util.thread.epGridsIterationData?.row || '';
     }
     iterateColumns(args, util) {
       if (!(args.gridName in grids)) {
@@ -1163,12 +1080,21 @@
       }
     }
     iterationColumn(args, util) {
-      return util.thread.epGridsIterationData?.column || ''
+      return util.thread.epGridsIterationData?.column || '';
     }
     iterationIdx(args, util) {
-      return util.thread.epGridsIterationData?.idx || ''
+      return util.thread.epGridsIterationData?.idx || '';
     }
   }
-
+  if (isPM) {
+    epDataGrids.prototype.serialize = () => {
+      return {epDataGrids: serializeState()}
+    }
+    epDataGrids.prototype.deserialize = (data) => {
+      if (data.extensionId !== undefined) {
+        deserializeState(data.extensionId);
+      }
+    }
+  }
   Scratch.extensions.register(new epDataGrids());
 })(Scratch);
