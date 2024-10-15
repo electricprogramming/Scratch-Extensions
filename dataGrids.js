@@ -309,12 +309,12 @@
     console.log('Data Grids: Loading serialized project data')
     grids = {};
     Object.keys(state).forEach(key => {
-      grids[key] = Grid.deserialize(data[key])
+      grids[key] = Grid.deserialize(state[key])
     })
     vm.extensionManager.refreshBlocks();
   }
   if (isTW) vm.runtime.on('PROJECT_LOADED', () => {
-    data = customStorage.get();
+    const data = customStorage.get();
     deserializeState(data)
   })
   class epDataGrids {
