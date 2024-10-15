@@ -1091,8 +1091,8 @@
       return {epDataGrids: serializeState()}
     }
     epDataGrids.prototype.deserialize = (data) => {
-      if (data.extensionId !== undefined) {
-        deserializeState(data.extensionId);
+      if (data.epDataGrids !== undefined) {
+        deserializeState(data.epDataGrids);
       }
     }
   }
