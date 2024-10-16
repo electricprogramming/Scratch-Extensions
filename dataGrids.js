@@ -350,12 +350,14 @@
                 defaultValue: 'my grid 1'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
             opcode: 'getGrids',
             blockType: Scratch.BlockType.REPORTER,
             text: 'all grids',
+            blockIconURI: getBlockIcon(),
             disableMonitor: true,
             hideFromPalette: false
           },
@@ -374,6 +376,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -390,6 +393,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -410,6 +414,7 @@
                 defaultValue: 1
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -430,6 +435,7 @@
                 defaultValue: 1
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -446,6 +452,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -462,6 +469,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -486,6 +494,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -506,6 +515,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -522,6 +532,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -542,6 +553,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -558,6 +570,7 @@
                 defaultValue: 'value'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -574,6 +587,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -590,6 +604,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: false
           },
           {
@@ -606,6 +621,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             disableMonitor: true,
             hideFromPalette: false
           },
@@ -623,6 +639,7 @@
                 menu: 'JSONtype'
               }
             },
+            blockIconURI: getBlockIcon(),
             disableMonitor: true,
             hideFromPalette: false
           },
@@ -649,6 +666,7 @@
                 menu: 'gridMenu'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: true
           },
           {
@@ -696,6 +714,7 @@
                 fillIn: 'iterationIdx'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: true
           },
           {
@@ -725,6 +744,7 @@
                 fillIn: 'iterationIdx'
               }
             },
+            blockIconURI: getBlockIcon(),
             hideFromPalette: true
           },
           {
@@ -742,20 +762,6 @@
             outputShape: 3,
             text: 'index',
             canDragDuplicate: true,
-            disableMonitor: true,
-            hideFromPalette: true
-          },
-          {
-            opcode: 'xmlMenu',
-            func: 'getGridName',
-            blockType: Scratch.BlockType.REPORTER,
-            text: '[gridName]',
-            arguments: {
-              gridName: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'gridMenu'
-              }
-            },
             disableMonitor: true,
             hideFromPalette: true
           },
@@ -798,7 +804,7 @@
           {
             opcode: 'getGridName',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'util [gridName]',
+            text: 'grid [gridName]',
             arguments: {
               gridName: {
                 type: Scratch.ArgumentType.STRING,
