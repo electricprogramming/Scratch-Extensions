@@ -327,6 +327,12 @@
         color3: '#b2220a',
         menuIconURI: getMenuIcon(),
         blocks: [
+          {
+            func: 'DISCLAIMER',
+            blockType: Scratch.BlockType.BUTTON,
+            text: 'DISCLAIMER',
+            hideFromPalette: false
+          },
           {blockType: Scratch.BlockType.LABEL, text: 'Grid Management'},
           {
             func: 'newGrid',
@@ -830,6 +836,9 @@
           }
         }
       };
+    }
+    DISCLAIMER() {
+      alert('DISCLAIMER: This extension only actively supports TurboWarp and PenguinMod. If any bugs occur in other Scratch mods, that is fully expected. However, if a bug occurs in TurboWarp or PenguinMod, it should be reported.')
     }
     getGridMenu() {
       return Object.keys(grids).length === 0? [''] : Object.keys(grids)
