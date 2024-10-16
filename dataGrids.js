@@ -228,7 +228,7 @@
       return JSON.stringify(this.#gridItems);
     }
     serializeObject() {
-      var serialized = {};
+      let serialized = {};
       this.forEachRow(
         (rowNum,rowAsArray) => {
           let rowAsJSON = {}
@@ -470,6 +470,19 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 1,
               },
+              gridName: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'gridMenu'
+              }
+            },
+            blockIconURI: getBlockIcon(),
+            hideFromPalette: false
+          },
+          {
+            opcode: 'deleteAll',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'delete all rows and columns from grid [gridName]',
+            arguments: {
               gridName: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'gridMenu'
@@ -844,8 +857,8 @@
       return Object.keys(grids).length === 0? [''] : Object.keys(grids)
     }
     newGrid() {
-      var defaultGridNameNum = 1;
-      var defaultGridName = `my grid ${defaultGridNameNum}`;
+      let defaultGridNameNum = 1;
+      let defaultGridName = `my grid ${defaultGridNameNum}`;
       Object.keys(grids).forEach(
         key => {
           if (key == defaultGridName) {
