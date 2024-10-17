@@ -1,12 +1,22 @@
 (function(){
   let lastOpenedFileData = {name: '', extension: '', size: 0, contentAsText: '', contentAsDataURL: ''};
-  function promptForFile(acceptedExtensions = []) {
+  {
+    let [ogLog,ogError,ogWarn] = [console.log,console.error,console.warn];
+    console.log = function(...args) {
+      ogLog('JavaScript Extension:',...args);
+    };
+    console.error = function(...args) {
+      ogError('Error in JavaScript Extension:',...args);
+    };
+    console.warn = function(...args) {
+      ogWarn('Warning from JavaScript Extension:', ...args);
+    };
+  }
+  function promptForFile(acceptedExtensions) {
     return new Promise((resolve, reject) => {
       const input = document.createElement('input');
       input.type = 'file';
-      if (acceptedExtensions.length > 0) {
-        input.accept = acceptedExtensions.map(ext => ext).join(',');
-      }
+      input.accept = acceptedExtensions;
       input.onchange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -61,6 +71,7 @@
       return {
         id: "jsForScratch",
         name: "JavaScript",
+        menuIconURI: `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGN0RGMUUiIC8+PHRleHQgeD0iNjAiIHk9IjE4NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjExMCIgZmlsbD0iIzAwMDAwMCIgZm9udC13ZWlnaHQ9ImJvbGQiPkpTPC90ZXh0Pjwvc3ZnPg==`,
         blocks: [
           {
             blockType: "command",
@@ -132,11 +143,11 @@
             arguments: {
               function: {
                 type: "string",
-                defaultValue: "function(a,b){return Number(a) + Number(b);}"
+                defaultValue: "function(a,b){return (a || b) && !(a && b);}"
               },
               ARGS: {
                 type: "string",
-                defaultValue: "[2,5]"
+                defaultValue: "[true, false]"
               }
             }
           },
@@ -169,7 +180,7 @@
             arguments: {
               types: {
                 type: "string",
-                defaultValue: "['.txt']"
+                defaultValue: '.txt'
               }
             }
           },
@@ -188,8 +199,12 @@
           {
             blockType: "command",
             opcode: "downloadFile",
-            text: "download file [contents] as [name]",
+            text: "download [fileContentType] [contents] as [name]",
             arguments: {
+              fileContentType: {
+                type: "string",
+                menu: "fileContentTypes"
+              },
               name: {
                 type: "string",
                 defaultValue: "example.txt"
@@ -203,22 +218,11 @@
           {
             blockType: "hat",
             opcode: "whenCondition",
-            text: "when [bool] is true",
+            text: "when [bool]",
             isEdgeActivated: true,
             arguments: {
               bool: {
                 type: "Boolean",
-              },
-            },
-          },
-          {
-            blockType: "reporter",
-            opcode: "literal",
-            text: "[data]",
-            arguments: {
-              data: {
-                type: "string",
-                defaultValue: "Hello"
               },
             },
           },
@@ -240,32 +244,75 @@
               },
             },
           },
+          {
+            blockType: "reporter",
+            opcode: "literal",
+            text: "[data]",
+            arguments: {
+              data: {
+                type: "string",
+                defaultValue: 'Hello, World!'
+              },
+            },
+          }
         ],
         menus: {
           fileDataTypes: {
             acceptReporters: false,
-            items: ["content as text","content as dataURL","name","extension","size"]
+            items: ['content as text','content as dataURL','name','extension','size']
+          },
+          fileContentTypes: {
+            acceptReporters: false,
+            items: ['text','dataURL']
           }
         }
       };
     }
     commandJS(args) {
-      eval(args.code);
+      try {
+        eval(args.code);
+      } catch(e) {
+        console.error(e);
+      }
     }
     reporterJS(args) {
-      return eval(args.code);
+      try {
+        return eval(args.code);
+      } catch(e) {
+        console.error(e);
+        return '';
+      }
     }
     booleanJS(args) {
-      return eval(args.code)? true : false;
+      try {
+        return eval(args.code)? true : false;
+      } catch(e) {
+        console.error(e);
+        return false;
+      }
     }
     functionCommand(args) {
-      eval(`let func = ${args.function}; func(...JSON.parse(args.ARGS))`);
+      try {
+        eval(`let func = ${args.function}; func(...JSON.parse(args.ARGS))`);
+      } catch (e) {
+        console.error(e);
+      }
     }
     functionReporter(args) {
-      return eval(`let func = ${args.function}; func(...JSON.parse(args.ARGS))`);
+      try {
+        return eval(`let func = ${args.function}; func(...JSON.parse(args.ARGS))`);
+      } catch(e) {
+        console.error(e);
+        return '';
+      }
     }
     functionBoolean(args) {
-      return eval(`let func = ${args.function}; func(...JSON.parse(args.ARGS))`)? true : false;
+      try {
+        return eval(`let func = ${args.function}; func(...JSON.parse(args.ARGS))`)? true : false;
+      } catch(e) {
+        console.error(e);
+        return false;
+      }
     }
     openInNewTab(args) {
       window.open(args.url, '_blank');
@@ -283,13 +330,18 @@
       return args.bool? args.val1 : args.val2;
     }
     async openFile(args) {
-      promptForFile(JSON.parse(args.types))
-        .then(fileInfo => {
-          lastOpenedFileData = fileInfo;
-        })
-        .catch(e => {
-          console.error(error)
-        })
+      try {
+        promptForFile(args.types)
+          .then(fileInfo => {
+            lastOpenedFileData = fileInfo;
+          })
+          .catch(e => {
+            console.error(e)
+          })
+      } catch(e) {
+        console.error(e);
+        lastOpenedFileData = {name: '', extension: '', size: 0, contentAsText: '', contentAsDataURL: ''};
+      }
     }
     getFileData(args) {
       switch (args.thing) {
@@ -308,7 +360,11 @@
       }
     }
     downloadFile(args) {
-      _downloadFile(args.name, args.contents)
+      try {
+        _downloadFile(args.name, args.contents)
+      } catch(e) {
+        console.error(e);
+      }
     }
   }
   window.vm = (node => {
