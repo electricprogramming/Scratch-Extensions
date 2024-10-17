@@ -65,7 +65,7 @@
           {
             blockType: "command",
             opcode: "commandJS",
-            text: "js [code]",
+            text: "JS | [code]",
             arguments: {
               code: {
                 type: "string",
@@ -76,7 +76,7 @@
           {
             blockType: "reporter",
             opcode: "reporterJS",
-            text: "js [code]",
+            text: "JS | [code]",
             arguments: {
               code: {
                 type: "string",
@@ -87,7 +87,7 @@
           {
             blockType: "Boolean",
             opcode: "booleanJS",
-            text: "js [code]",
+            text: "JS | [code]",
             arguments: {
               code: {
                 type: "string",
