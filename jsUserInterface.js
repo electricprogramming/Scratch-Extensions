@@ -31,6 +31,22 @@
                         }
                     },
                     {
+                        opcode: 'promptWithDefault',
+                        func: 'promptBlock',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'prompt [INPUT] with default [DEFAULT]',
+                        arguments: {
+                            INPUT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'What is your name?'
+                            },
+                            DEFAULT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Bob Smith'
+                            }
+                        }
+                    },
+                    {
                         opcode: 'confirmBlock',
                         blockType: Scratch.BlockType.BOOLEAN,
                         text: 'confirm [INPUT]',
@@ -49,7 +65,7 @@
             alert(args.INPUT);
         }
         promptBlock(args) {
-            return prompt(args.INPUT) || '';
+            return prompt(args.INPUT,args.DEFAULT || '') || '';
         }
         confirmBlock(args) {
             return confirm(args.INPUT);
