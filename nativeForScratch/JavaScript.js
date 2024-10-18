@@ -1,10 +1,8 @@
 (function(){
   let lastOpenedFileData = {name: '', extension: '', size: 0, contentAsText: '', contentAsDataURL: ''};
   {
-    let [ogLog,ogError,ogWarn] = [console.log,console.error,console.warn];
-    console.log = function(...args) {
-      ogLog('JavaScript Extension:',...args);
-    };
+    let [ogError,ogWarn] = [console.error,console.warn];
+    console.log = function(){};
     console.error = function(...args) {
       ogError('Error in JavaScript Extension:',...args);
     };
