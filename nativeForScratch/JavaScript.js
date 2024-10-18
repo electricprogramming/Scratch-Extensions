@@ -111,11 +111,11 @@
             arguments: {
               function: {
                 type: "string",
-                defaultValue: "function(a,b){return Number(a) + Number(b);}"
+                defaultValue: "function(...args){alert(`Running a custom function with args ${JSON.stringify(args)}`);}"
               },
               ARGS: {
                 type: "string",
-                defaultValue: "[2,5]"
+                defaultValue: '["Hello","World!"]'
               }
             }
           },
