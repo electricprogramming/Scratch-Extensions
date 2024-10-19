@@ -1,4 +1,4 @@
-// This is not an extension.
+// This is not an extension, it just globalizes the Scratch VM so it can be accessed in the console.
 (function(){
   try {
     window.vm = (node => {
