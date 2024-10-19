@@ -161,6 +161,31 @@
             }
           },
           {
+            blockType: "reporter",
+            opcode: "monoArr",
+            text: "[[item]]",
+            arguments: {
+              item: {
+                type: "string",
+                defaultValue: "Hello, World!"
+              }
+            }
+          },
+          {
+            blockType: "reporter",
+            opcode: "addToArr",
+            text: "add [item] to [arr]",
+            arguments: {
+              item: {
+                type: "string",
+                defaultValue: "Hello, Fellow Scratchers!"
+              },
+              arr: {
+                type: null,
+              }
+            }
+          },
+          {
             blockType: "command",
             opcode: "openInNewTab",
             text: "open site [url] in new tab",
@@ -321,6 +346,21 @@
       } catch(e) {
         console.error(e);
         return false;
+      }
+    }
+    monoArr(args) {
+      let arr = [];
+      arr.push(args.item);
+      return JSON.stringify(arr);
+    }
+    addToArr(args) {
+      try {
+        let arr = args.arr;
+        arr.push(args.item);
+        return arr;
+      } catch(e) {
+        console.error(e);
+        return [];
       }
     }
     openInNewTab(args) {
