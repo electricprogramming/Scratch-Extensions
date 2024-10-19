@@ -355,7 +355,7 @@
     }
     addToArr(args) {
       try {
-        let arr = args.arr;
+        let arr = JSON.parse(args.arr);
         arr.push(args.item);
         return arr;
       } catch(e) {
