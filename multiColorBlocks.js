@@ -1,6 +1,6 @@
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed) throw new Error("Custom Blocks Plus must run unsandboxed!");
+  if (!Scratch.extensions.unsandboxed) throw new Error("Multi Color must run unsandboxed!");
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   /* Adjusts converter so blocks can have their own color1, color2, and color3 properties. */
