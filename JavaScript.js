@@ -169,7 +169,7 @@
                 type: "string",
                 defaultValue: "Hello, World!"
               }
-            }
+            }, hideFromPalette: true
           },
           {
             blockType: "reporter",
@@ -183,7 +183,7 @@
               arr: {
                 type: null,
               }
-            }
+            }, hideFromPalette: true
           },
           {
             blockType: "command",
