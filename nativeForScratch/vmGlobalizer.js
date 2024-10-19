@@ -1,3 +1,4 @@
+// This is not an extension.
 (function(){
   try {
     window.vm = (node => {
