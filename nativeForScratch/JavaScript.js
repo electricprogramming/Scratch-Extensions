@@ -2,7 +2,10 @@
   let lastOpenedFileData = {name: '', extension: '', size: 0, contentAsText: '', contentAsDataURL: ''};
   {
     let [ogError,ogWarn] = [console.error,console.warn];
-    console.log = function(){};
+    let ogLog = false ? console.log : () => {} // easy way to control whether console.log does anything.
+    console.log = function(...args){
+      ogLog('JavaScript Extension:',...args)
+    };
     console.error = function(...args) {
       ogError('Error in JavaScript Extension:',...args);
     };
@@ -365,16 +368,16 @@
       }
     }
   }
-  window.vm = (node => {
+  var vm = (node => {
     node = document.querySelector('div[class*=stage-header_stage-header-wrapper]');
     node = node[Object.keys(node).find(key => (key = String(key), key.startsWith('__reactInternal') || key.startsWith('__reactFiber')))].return.return.return;
     node = node.stateNode?.props?.vm || node.return?.updateQueue?.stores?.[0]?.value?.vm;
-    if (!node) throw new Error('Could not find VM :(');
+    if (!node) throw new Error('Could not find VM 😢');
     return node;
   })();
   (function() {
-    var extensionInstance = new JSforScratch(window.vm.extensionManager.runtime);
-    var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
-    window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
+    var extensionInstance = new JSforScratch(vm.extensionManager.runtime);
+    var serviceName = vm.extensionManager._registerInternalExtension(extensionInstance);
+    vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
   })();
 })();
