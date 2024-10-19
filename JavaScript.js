@@ -163,7 +163,7 @@
           {
             blockType: "reporter",
             opcode: "monoArr",
-            text: "[[item]]",
+            text: "［ [item] ］",
             arguments: {
               item: {
                 type: "string",
@@ -174,7 +174,7 @@
           {
             blockType: "reporter",
             opcode: "addToArr",
-            text: "add [item] to [arr]",
+            text: "array [arr] + [item]",
             arguments: {
               item: {
                 type: "string",
@@ -183,7 +183,7 @@
               arr: {
                 type: null,
               }
-            }, hideFromPalette: true
+            }
           },
           {
             blockType: "command",
