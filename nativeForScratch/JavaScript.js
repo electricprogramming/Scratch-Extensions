@@ -174,7 +174,7 @@
           {
             blockType: "reporter",
             opcode: "addToArr",
-            text: "add [item] to [arr]",
+            text: "array [arr] + [item]",
             arguments: {
               item: {
                 type: "string",
