@@ -56,7 +56,7 @@
       readerText.readAsText(file);
     });
   }
-  function _downloadFile(fileName, content) {
+  function _downloadFileByText(fileName, content) {
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -66,6 +66,14 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+  function _downloadFileByDataURL(fileName, dataURL) {
+    const a = document.createElement('a');
+    a.href = dataURL;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
   class JSext {
     getInfo() {
@@ -260,7 +268,7 @@
         menus: {
           fileDataTypes: {
             acceptReporters: false,
-            items: ['content as text','content as dataURL','name','extension','size']
+            items: ['content as text','content as dataURL','name','extension','size in bytes']
           },
           fileContentTypes: {
             acceptReporters: false,
@@ -354,7 +362,7 @@
           return lastOpenedFileData.name;
         case "extension":
           return lastOpenedFileData.extension;
-        case "size":
+        case "size in bytes":
           return lastOpenedFileData.size;
         default:
           return "";
@@ -362,7 +370,11 @@
     }
     downloadFile(args) {
       try {
-        _downloadFile(args.name, args.contents)
+        if (args.fileContentType === 'text') {
+          _downloadFileByText(args.name, args.contents);
+        } else if (args.fileContentType === 'dataURL') {
+          _downloadFileByDataURL(args.name, args.contents);
+        } else return;
       } catch(e) {
         console.error(e);
       }
