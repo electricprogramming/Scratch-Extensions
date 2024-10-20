@@ -337,7 +337,7 @@
           {
             func: 'newGrid',
             blockType: Scratch.BlockType.BUTTON,
-            text: 'New Grid',
+            text: 'Make a Grid',
             hideFromPalette: false
           },
           {
