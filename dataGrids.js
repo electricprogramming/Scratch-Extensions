@@ -884,7 +884,7 @@
       updateProjectStorage();
     }
     deleteGrid() {
-      const toDelete = await prompt('What is the grid that should be deleted called?');
+      const toDelete = await prompt('What is the name of the grid that should be deleted?'');
       if (toDelete === null) return;
       if (toDelete in grids) {
         if (confirm(`Are you sure you want to delete grid ${JSON.stringify(toDelete)}?`)) {
