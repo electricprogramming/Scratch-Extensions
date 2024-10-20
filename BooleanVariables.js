@@ -11,7 +11,7 @@
   const runtime = vm.runtime;
   const menuIconURI = (function(){
     return `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgcng9IjIwIiByeT0iMjAiIGZpbGw9IiNmZjhjMWEiIC8+CiAgPHBvbHlnb24gcG9pbnRzPSIxODAsMTAwIDE0MCwxMjAgNjAsMTIwIDIwLDEwMCA2MCw4MCAxNDAsODAiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==`
-  })();
+  })(); // Uses an iife to be compressible in editors that will make it a huge blob instead of just letting it go off the edge.
   let boolVars = {};
   const methodSafe = {
     encode: function(str) {
