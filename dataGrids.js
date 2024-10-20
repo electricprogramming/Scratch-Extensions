@@ -867,7 +867,12 @@
           }
         }
       );
-      const gridName = prompt('What should the grid be called?',defaultGridName);
+      const gridName = await prompt('What should the grid be called?',defaultGridName);
+      if (gridName === null) return;
+      if (gridName.length === 0) {
+        alert('Grid name cannot be empty.');
+        return;
+      }
       if (gridName in grids) {
         alert('This grid name is in use.');
       } else if (gridName.includes('[') || gridName.includes(']')) {
@@ -879,7 +884,8 @@
       updateProjectStorage();
     }
     deleteGrid() {
-      const toDelete = prompt('What is the grid that should be deleted called?');
+      const toDelete = await prompt('What is the grid that should be deleted called?');
+      if (toDelete === null) return;
       if (toDelete in grids) {
         if (confirm(`Are you sure you want to delete grid ${JSON.stringify(toDelete)}?`)) {
           delete grids[toDelete];
