@@ -156,7 +156,7 @@
     async deleteBoolVar() {
       let toDelete = await prompt('What is the name of the boolean variable that should be deleted?');
       if (toDelete === null) return;
-      if (!toDelete in boolVars) {
+      if (!(toDelete in boolVars)) {
         alert(`Boolean variable ${JSON.stringify(toDelete)} not found`);
         return;
       }
