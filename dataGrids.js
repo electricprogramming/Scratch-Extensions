@@ -937,9 +937,16 @@
       if (args.gridName in grids) {
         grids[args.gridName].deleteColumn(args.columnNum);
       } else {
-        console.error('Data Grids: Grid not found')
+        console.error('Data Grids: Grid not found');
       }
       updateProjectStorage();
+    }
+    deleteAll(args) {
+      if (args.gridName in grids) {
+        grids[args.gridName] = Grid.new(0,0);
+      } else {
+        console.error('Data Grids: Grid not found');
+      }
     }
     setCellValue(args) {
       if (args.gridName in grids) {
