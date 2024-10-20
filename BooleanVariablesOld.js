@@ -1,5 +1,11 @@
+/*
+This extension is temporarily deprecated, as it uses a dynamic
+palette which cannot save and load again without issues.
+If you think you know of a way to make the dynamic palette work,
+open an issue titled `Dynamic Palette Idea` on this repository.
+*/
 // Name: Boolean Variables
-// ID: booleanvariables
+// ID: epBoolVars
 // Description: Creates blocks dealing with boolean variables which store either true or false and can be accessed via a menu.
 (function (Scratch) {
   "use strict";
