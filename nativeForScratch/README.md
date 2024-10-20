@@ -1,6 +1,6 @@
 # What are these?
 These extensions are designed to function in *native Scratch*, which means you can upload projects with custom extensions onto the [official Scratch website](https://scratch.mit.edu).  
-# How to use
+# How to use them
 ### On the project page
 To use these on the project page, you have to either create a bookmarklet with a `javascript:` URL based on the code and then click it or just run the code in the browser console. Either way, it needs to be run before the project starts.
 ### In the editor
