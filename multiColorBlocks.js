@@ -1,15 +1,20 @@
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed) throw new Error("Multi Color must run unsandboxed!");
+  if (!Scratch.extensions.unsandboxed) throw new Error("Custom Blocks Plus must run unsandboxed!");
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   /* Adjusts converter so blocks can have their own color1, color2, and color3 properties. */
   const originalConverter = runtime._convertBlockForScratchBlocks.bind(runtime);
   runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
     const res = originalConverter(blockInfo, categoryInfo);
-    if (blockInfo.color1) res.json.colour_ = blockInfo.color1;
-    if (blockInfo.color2) res.json.colourSecondary_ = blockInfo.color2;
-    if (blockInfo.color3) res.json.colourTertiary_ = blockInfo.color3;
+    if (blockInfo.color1) res.json.colour = blockInfo.color1;
+    if (blockInfo.color2) res.json.colourSecondary = blockInfo.color2;
+    if (blockInfo.color3) res.json.colourTertiary = blockInfo.color3;
+    if (blockInfo.color1 && blockInfo.color2 && !blockInfo.color3) {
+      console.log('Third color not found, setting third to match second.')
+      res.json.colourTertiary = blockInfo.color2;
+    }
+    console.log(res)
     return res;
   }
   class epMultiColor {
