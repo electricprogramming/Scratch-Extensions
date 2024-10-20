@@ -1,7 +1,18 @@
+// Name: Boolean Variables
+// ID: booleanvariables
+// Description: Creates blocks dealing with boolean variables which store either true or false and can be accessed via a menu.
 (function (Scratch) {
   "use strict";
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error(`Boolean Variables Extension must be ran unsandboxed.`);
+  }
+  const [isTW,isPM] = [!Scratch.extensions.isPenguinMod, Scratch.extensions.isPenguinMod];
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+  const menuIconURI = (function(){
+    return `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgcng9IjIwIiByeT0iMjAiIGZpbGw9IiNmZjhjMWEiIC8+CiAgPHBvbHlnb24gcG9pbnRzPSIxODAsMTAwIDE0MCwxMjAgNjAsMTIwIDIwLDEwMCA2MCw4MCAxNDAsODAiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==`
+  })();
+  let boolVars = {};
   const methodSafe = {
     encode: function(str) {
       const alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -34,7 +45,40 @@
       }).join('');
     }
   };
-  let boolVars = {};
+  const customStorage = {
+    set: (data) => {
+      if (isTW) vm.runtime.extensionStorage.epBoolVars = {data};
+    },
+    get: () => {
+      if (isTW) return vm.runtime.extensionStorage.epBoolVars?.data; else return;
+    }
+  };
+  function serializeState() {
+    return boolVars;
+  }
+  function updateProjectStorage() {
+    customStorage.set(serializeState());
+  }
+  function deserializeState(state) {
+    console.log('Boolean Variables: Loading serialized project data')
+    boolVars = state;
+    Object.keys(boolVars).forEach(name => {
+      const methodSafeName = `getValueOf${methodSafe.encode(name)}`;
+      blocks.splice(blocks.indexOf('---'), 0, {
+        opcode: methodSafeName,
+        blockType: Scratch.BlockType.BOOLEAN,
+        text: name
+      })
+      epBoolVars.prototype[methodSafeName] = function() {
+        return boolVars[name];
+      };
+    })
+    vm.extensionManager.refreshBlocks();
+  }
+  if (isTW) vm.runtime.on('PROJECT_LOADED', () => {
+    const data = customStorage.get();
+    deserializeState(data);
+  })
   let blocks = [
     {
       func: 'newBoolVar',
@@ -51,13 +95,16 @@
       }
     },
     '---'
-  ]
+  ];
   class epBoolVars {
     getInfo() {
       return {
         id: "epBoolVars",
         name: "Boolean Variables",
-        blocks: blocks,
+        menuIconURI,
+        blocks,
+        color1: '#ff8c1a',
+        color2: '#ef7c0a',
         menus: {
           boolVars: {
             items: 'getBoolVars',
@@ -82,6 +129,10 @@
       }
       let newBvName = await prompt('What should the new boolean variable be called?', getDefaultName());
       if (newBvName === null) return;
+      if (newBvName.length === 0) {
+        alert('Grid name cannot be empty.');
+        return;
+      }
       newBvName = newBvName
         .replace(/\[/g, '［')
         .replace(/\]/g, '］');
@@ -96,15 +147,36 @@
         blockType: Scratch.BlockType.BOOLEAN,
         text: newBvName
       })
-      console.log(Object.keys(boolVars).length === 0);
-      console.log(blocks)
       epBoolVars.prototype[methodSafeName] = function() {
         return boolVars[newBvName];
       };
       vm.extensionManager.refreshBlocks();
+      updateProjectStorage();
     }
     async deleteBoolVar() {
-      
+      let toDelete = await prompt('What is the name of the boolean variable that should be deleted?');
+      if (toDelete === null) return;
+      if (!toDelete in boolVars) {
+        alert(`Boolean variable ${JSON.stringify(toDelete)} not found`);
+        return;
+      }
+      if (confirm(`Are you sure you want to delete boolean variable ${JSON.stringify(toDelete)}?`)) {
+        delete boolVars[toDelete];
+        blocks = blocks.filter(block => block.opcode !== `getValueOf${methodSafe.encode(toDelete)}`)
+        delete epBoolVars.prototype[`getValueOf${methodSafe.encode(toDelete)}`];
+        vm.extensionManager.refreshBlocks();
+        updateProjectStorage();
+      }
+    }
+  }
+  if (isPM) {
+    epBoolVars.prototype.serialize = () => {
+      return {epBoolVars: serializeState()}
+    }
+    epBoolVars.prototype.deserialize = (data) => {
+      if (data.epBoolVars !== undefined) {
+        deserializeState(data.epBoolVars);
+      }
     }
   }
   Scratch.extensions.register(new epBoolVars());
