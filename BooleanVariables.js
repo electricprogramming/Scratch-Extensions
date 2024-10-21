@@ -98,7 +98,7 @@
             func: 'deleteBoolVar',
             blockType: Scratch.BlockType.BUTTON,
             text: 'Delete a Boolean Variable',
-            hideFromPalette: Object.keys(boolVars).length === 0;
+            hideFromPalette: Object.keys(boolVars).length === 0
           },
           '---',
           {
@@ -133,7 +133,7 @@
       };
     }
     getBoolVarMenu() {
-      return Object.keys(boolVars);
+      return Object.keys(boolVars).length === 0 ? [''] : Object.keys(boolVars);
     }
     async newBoolVar() {
       function getDefaultName() {
